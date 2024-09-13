@@ -6,10 +6,15 @@ from scipy.ndimage import binary_erosion
 # Define the Cellpose model that will be used
 model = models.Cellpose(gpu=True, model_type="nuclei")
 
-def segment_nuclei_2d (nuclei_stack, gaussian_sigma = 0, cellpose_nuclei_diameter = None):
+def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diameter = None):
 
-    # Perform maximum intensity projections
-    nuclei_mip = np.max(nuclei_stack, axis=0)
+    if len(nuclei_input.shape) == 3:
+        # Perform maximum intensity projection (MIP) from the stack
+        nuclei_mip = np.max(nuclei_input, axis=0)
+
+    elif len(nuclei_input.shape) == 2:
+        # Input is already a maximum intensity projection (MIP)
+        nuclei_mip = nuclei_input
 
     # Might need to perform a Gaussian-blur before
     post_gaussian_img = filters.gaussian(
@@ -32,10 +37,15 @@ def segment_nuclei_2d (nuclei_stack, gaussian_sigma = 0, cellpose_nuclei_diamete
 
     return nuclei_mip, nuclei_labels
 
-def segment_marker_positive_nuclei (nuclei_labels, marker_stack, marker_channel_threshold, erosion_factor):
+def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_threshold, erosion_factor):
 
-    # Perform maximum intensity projections
-    marker_mip = np.max(marker_stack, axis=0)
+    if len(marker_input.shape) == 3:
+        # Perform maximum intensity projection from the stack
+        marker_mip = np.max(marker_input, axis=0)
+
+    elif len(marker_input.shape) == 2:
+        # Input is already a maximum intensity projection (MIP)
+        marker_mip = marker_input
 
     # Convert nuclei_masks to boolean mask
     nuclei_masks_bool = nuclei_labels.astype(bool)
