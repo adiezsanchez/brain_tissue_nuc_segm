@@ -34,8 +34,10 @@ def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diamete
         channels=[0, 0],
         net_avg=False,
     )
-
-    return nuclei_mip, nuclei_labels
+    if len(nuclei_input.shape) == 3:
+        return nuclei_mip, nuclei_labels
+    elif len(nuclei_input.shape) == 2:
+        return nuclei_labels
 
 def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_threshold, erosion_factor):
 
