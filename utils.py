@@ -1,4 +1,5 @@
 from cellpose import models
+from pathlib import Path
 import numpy as np
 from skimage import exposure, filters, measure
 from scipy.ndimage import binary_erosion
@@ -75,3 +76,25 @@ def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_
         processed_region_labels[labeled_nuclei == label] = label
 
     return marker_mip, processed_region_labels
+
+def check_filenames(images, rois):
+
+    # Extract the base filenames without extensions using Path.stem
+    images_base = [Path(file).stem for file in images]
+    rois_base = [Path(file).stem for file in rois]
+
+    # Check for missing files in images list
+    missing_in_images = [file for file in rois_base if file not in images_base]
+    if missing_in_images:
+        for file in missing_in_images:
+            print(f"Missing in images list: {file}")
+    else:
+        print("No files missing in images list.")
+
+    # Check for missing files in rois list
+    missing_in_rois = [file for file in images_base if file not in rois_base]
+    if missing_in_rois:
+        for file in missing_in_rois:
+            print(f"Missing in rois list: {file}")
+    else:
+        print("No files missing in rois list.")
