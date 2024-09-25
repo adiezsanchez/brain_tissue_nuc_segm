@@ -3,6 +3,9 @@ from pathlib import Path
 import numpy as np
 from skimage import exposure, filters, measure
 from scipy.ndimage import binary_erosion
+import pyclesperanto_prototype as cle
+
+cle.select_device("RTX")
 
 # Define the Cellpose model that will be used
 model = models.Cellpose(gpu=True, model_type="nuclei")
@@ -98,3 +101,33 @@ def check_filenames(images, rois):
             print(f"Missing in rois list: {file}")
     else:
         print("No files missing in rois list.")
+
+def simulate_cytoplasm(nuclei_labels, dilation_radius = 2, erosion_radius = 0):
+
+    # Dilate nuclei labels to simulate the surrounding cytoplasm
+    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
+    cyto_nuclei_labels = cle.pull(cyto_nuclei_labels)
+    cytoplasm = cyto_nuclei_labels
+
+    # Create a copy of dilated_nuclei to modify
+    # cytoplasm = cyto_nuclei_labels.copy()
+
+    # Get unique labels (excluding 0 which is background)
+    unique_labels = np.unique(nuclei_labels)
+    unique_labels = unique_labels[unique_labels != 0]
+
+    if erosion_radius >= 1:
+
+        # Erode nuclei_labels to maintain a closed cytoplasmic region when labels are touching (if needed)
+        eroded_nuclei_labels = cle.erode_labels(nuclei_labels, radius=erosion_radius)
+        eroded_nuclei_labels = cle.pull(eroded_nuclei_labels)
+        nuclei_labels = eroded_nuclei_labels
+
+    # Iterate over each label and remove the corresponding pixels from dilated_nuclei
+    for label in unique_labels:
+        # Create a mask for the current label in filtered_nuclei
+        mask = (nuclei_labels == label)
+        # Set corresponding pixels in resulting_nuclei to zero
+        cytoplasm[mask] = 0
+
+    return cytoplasm
