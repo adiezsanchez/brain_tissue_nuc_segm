@@ -1,6 +1,11 @@
 from cellpose import models
 from pathlib import Path
+import czifile
+import nd2
+import tifffile
+import napari
 import numpy as np
+import os
 from skimage import exposure, filters, measure
 from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
@@ -9,6 +14,121 @@ cle.select_device("RTX")
 
 # Define the Cellpose model that will be used
 model = models.Cellpose(gpu=True, model_type="nuclei")
+
+def list_images (directory_path):
+
+    # Create an empty list to store all image filepaths within the dataset directory
+    images = []
+
+    # Iterate through the .czi and .nd2 files in the directory
+    for file_path in directory_path.glob("*.czi"):
+        images.append(str(file_path))
+        
+    for file_path in directory_path.glob("*.nd2"):
+        images.append(str(file_path))
+
+    return images
+
+
+def read_image (image, slicing_factor):
+
+    # Read path storing raw image and extract filename
+    file_path = Path(image)
+    filename = file_path.stem
+
+    # Read the image file (either .czi or .nd2)
+    try:
+        img = czifile.imread(image)
+        # Remove singleton dimensions
+        img = img.squeeze()
+        # Perform MIP on all channels
+        img_mip = np.max(img, axis=1)
+
+    except ValueError:
+        img = nd2.imread(image)
+        # Perform MIP on all channels
+        img_mip = np.max(img, axis=0)
+
+    # Apply slicing trick to reduce image size
+    img_mip = img_mip[:, ::slicing_factor, ::slicing_factor]
+
+    # Feedback for researcher
+    print(f"Image displayed: {filename}")
+    print(f"Original Array shape: {img.shape}")
+    print(f"MIP Array shape: {img_mip.shape}")
+
+    return img_mip, filename
+
+def process_labels (viewer, directory_path, filename):
+    """Stores user-defined labels in memory for masking input image and saves them as .tiff files"""
+
+    # Initialize empty list to store the label name and Numpy arrays so we can loop across the different ROIs
+    layer_names = []
+    layer_labels = []
+
+    if len(viewer.layers) == 1:
+
+        # Extract the xy dimensions of the input image
+        img_shape = viewer.layers[0].data.shape
+        img_xy_dims = img_shape[-2:]
+
+        # Create a label covering the entire image
+        label = np.ones(img_xy_dims)
+
+        # Add a name and the label to its corresponding list
+        layer_names.append("full_image")
+        layer_labels.append(label)
+
+    else:
+
+        for layer in viewer.layers:
+
+            # Extract the label names
+            label_name = layer.name
+            # Ignore img_mip since it is not a user defined label
+            if label_name == "img_mip":
+                pass
+            else:
+                # Store label names
+                layer_names.append(label_name)
+                # Get the label data as a NumPy array to mask the image
+                label = layer.data 
+                layer_labels.append(label)
+
+        # Print the defined ROIs that will be analyzed
+        print(f"The following labels will be analyzed: {layer_names}")
+
+    # Save user-defined ROIs in a ROI folder under directory_path/ROI as .tiff files
+    # Subfolders for each user-defined label region
+    # Store using the same filename as the input image to make things easier
+
+    for label_name, label_array in zip(layer_names, layer_labels):
+
+        if label_name == "full_image":
+            print("Full image analyzed, no need to store ROIs")
+            pass
+
+        else:
+
+            # Perform maximum intensity projection (MIP) from the label stack
+            label_mip = np.max(label_array, axis=0)
+
+            # We will create a mask where label_mip is greater than or equal to 1
+            mask = (label_mip >= 1).astype(np.uint8)
+
+            # Create ROI directory if it does not exist
+            try:
+                os.makedirs(directory_path / "ROIs" / label_name)
+            except FileExistsError:
+                pass
+
+            # Construct path to store
+            roi_path = directory_path / "ROIs" / label_name / f"{filename}.tiff"
+
+            # Save mask (binary image)
+            tifffile.imwrite(roi_path, mask)
+
+    return layer_names, layer_labels
 
 def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diameter = None):
 
