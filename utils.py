@@ -78,7 +78,7 @@ def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_
         # Recover the entire region of the original nuclei_mask that has this label
         processed_region_labels[labeled_nuclei == label] = label
 
-    return marker_mip, processed_region_labels
+    return nuclei_and_marker, eroded_nuclei_and_marker, marker_mip, processed_region_labels
 
 def check_filenames(images, rois):
 
