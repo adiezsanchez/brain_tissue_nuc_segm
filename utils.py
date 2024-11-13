@@ -59,6 +59,62 @@ def read_image (image, slicing_factor):
 
     return img_mip, filename
 
+def save_rois(viewer, directory_path, filename):
+
+    """Code snippet to save cropped regions (ROIs) defined by labels as .tiff files"""
+
+    # Initialize empty list to store the label name and Numpy arrays so we can loop across the different ROIs
+    layer_names = []
+    layer_labels = []
+
+    if len(viewer.layers) == 1:
+
+        print("Full image analyzed, no need to store ROIs")
+
+    else:
+
+        for layer in viewer.layers:
+
+            # Extract the label names
+            label_name = layer.name
+            # Ignore img_mip since it is not a user defined label
+            if label_name == "img_mip":
+                pass
+            else:
+                # Store label names
+                layer_names.append(label_name)
+                # Get the label data as a NumPy array to mask the image
+                label = layer.data 
+                layer_labels.append(label)
+
+        # Print the defined ROIs that will be analyzed
+        print(f"The following labels will be analyzed: {layer_names}")
+
+    # Save user-defined ROIs in a ROI folder under directory_path/ROI as .tiff files
+    # Subfolders for each user-defined label region
+    # Store using the same filename as the input image to make things easier
+
+    for label_name, label_array in zip(layer_names, layer_labels):
+
+        # Perform maximum intensity projection (MIP) from the label stack
+        label_mip = np.max(label_array, axis=0)
+
+        # We will create a mask where label_mip is greater than or equal to 1
+        mask = (label_mip >= 1).astype(np.uint8)
+
+        # Create ROI directory if it does not exist
+        try:
+            os.makedirs(directory_path / "ROIs" / label_name)
+        except FileExistsError:
+            pass
+
+        # Construct path to store
+        roi_path = directory_path / "ROIs" / label_name / f"{filename}.tiff"
+
+        # Save mask (binary image)
+        tifffile.imwrite(roi_path, mask)
+
+
 def process_labels (viewer, directory_path, filename):
     """Stores user-defined labels in memory for masking input image and saves them as .tiff files"""
 
