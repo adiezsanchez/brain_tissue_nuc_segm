@@ -69,7 +69,7 @@ def save_rois(viewer, directory_path, filename):
 
     if len(viewer.layers) == 1:
 
-        print("Full image analyzed, no need to store ROIs")
+        print("No user-defined ROIs have been stored")
 
     else:
 
