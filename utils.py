@@ -53,7 +53,7 @@ def read_image (image, slicing_factor):
     img_mip = img_mip[:, ::slicing_factor, ::slicing_factor]
 
     # Feedback for researcher
-    print(f"Image displayed: {filename}")
+    print(f"Image analyzed: {filename}")
     print(f"Original Array shape: {img.shape}")
     print(f"MIP Array shape: {img_mip.shape}")
 
