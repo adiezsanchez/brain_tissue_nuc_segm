@@ -219,7 +219,7 @@ def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diamete
     elif len(nuclei_input.shape) == 2:
         return nuclei_labels
 
-def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_threshold, erosion_factor):
+def segment_marker_positive_nuclei (nuclei_labels, marker_input, min_max_range, erosion_factor):
 
     if len(marker_input.shape) == 3:
         # Perform maximum intensity projection from the stack
@@ -232,8 +232,9 @@ def segment_marker_positive_nuclei (nuclei_labels, marker_input, marker_channel_
     # Convert nuclei_masks to boolean mask
     nuclei_masks_bool = nuclei_labels.astype(bool)
 
-    # Find nuclei that intersect with the marker signal
-    nuclei_and_marker = nuclei_masks_bool & (marker_mip > marker_channel_threshold)
+    # Find nuclei that intersect with the marker signal defined range
+    nuclei_and_marker = nuclei_masks_bool & (min_max_range[0] < marker_mip) & (marker_mip < min_max_range[1])
+
 
     # Erode the result to remove small objects
     structuring_element = np.ones((erosion_factor, erosion_factor), dtype=bool)
