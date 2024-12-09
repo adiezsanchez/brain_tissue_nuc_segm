@@ -67,7 +67,7 @@ def read_image (image, slicing_factor):
     img = img[:, :, ::slicing_factor, ::slicing_factor]
 
     # Feedback for researcher
-    print(f"Image analyzed: {filename}")
+    print(f"\n\nImage analyzed: {filename}")
     print(f"Original Array shape: {img.shape}")
     print(f"Compressed Array shape: {img.shape}")
 
@@ -272,8 +272,8 @@ def segment_marker_positive_nuclei (nuclei_labels, marker_input, min_max_range, 
     nuclei_and_marker = nuclei_masks_bool & (min_max_range[0] < marker_mip) & (marker_mip < min_max_range[1])
 
 
-    # Erode the result to remove small objects
-    structuring_element = np.ones((erosion_factor, erosion_factor), dtype=bool)
+    # Create a 3D structuring element (cuboid)
+    structuring_element = np.ones((erosion_factor, erosion_factor, erosion_factor), dtype=bool)
     eroded_nuclei_and_marker = binary_erosion(nuclei_and_marker, structure=structuring_element)
 
     # Label the eroded nuclei and marker mask
