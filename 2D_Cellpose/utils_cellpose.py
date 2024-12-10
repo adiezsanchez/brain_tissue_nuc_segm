@@ -212,7 +212,6 @@ def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diamete
         img_rescale,
         diameter=cellpose_nuclei_diameter,
         channels=[0, 0],
-        net_avg=False,
     )
     if len(nuclei_input.shape) == 3:
         return nuclei_mip, nuclei_labels
