@@ -12,9 +12,6 @@ import os
 from skimage import exposure, filters, measure
 from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
-import dask.array as da
-from dask.diagnostics import ProgressBar
-from dask.distributed import Client
 
 cle.select_device("RTX")
 
@@ -318,19 +315,7 @@ def check_filenames(images, rois):
     else:
         print("No files missing in rois list.")
 
-def simulate_cytoplasm(nuclei_labels, dilation_radius = 2, erosion_radius = 0):
-
-    # Dilate nuclei labels to simulate the surrounding cytoplasm
-    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
-    cyto_nuclei_labels = cle.pull(cyto_nuclei_labels)
-    cytoplasm = cyto_nuclei_labels
-
-    # Create a copy of dilated_nuclei to modify
-    # cytoplasm = cyto_nuclei_labels.copy()
-
-    # Get unique labels (excluding 0 which is background)
-    unique_labels = np.unique(nuclei_labels)
-    unique_labels = unique_labels[unique_labels != 0]
+def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
 
     if erosion_radius >= 1:
 
@@ -339,117 +324,14 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius = 2, erosion_radius = 0):
         eroded_nuclei_labels = cle.pull(eroded_nuclei_labels)
         nuclei_labels = eroded_nuclei_labels
 
-    # Iterate over each label and remove the corresponding pixels from dilated_nuclei
-    for label in unique_labels:
-        # Create a mask for the current label in filtered_nuclei
-        mask = (nuclei_labels == label)
-        # Set corresponding pixels in resulting_nuclei to zero
-        cytoplasm[mask] = 0
+    # Dilate nuclei labels to simulate the surrounding cytoplasm
+    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
+    cytoplasm = cle.pull(cyto_nuclei_labels)
+
+    # Create a binary mask of the nuclei
+    nuclei_mask = nuclei_labels > 0
+
+    # Set the corresponding values in the cyto_nuclei_labels array to zero
+    cytoplasm[nuclei_mask] = 0
 
     return cytoplasm
-
-def simulate_cytoplasm_dask(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(512, 512)):
-    """
-    Simulate the cytoplasm from nuclei labels using Dask for large datasets.
-
-    Args:
-        nuclei_labels (ndarray or dask.array): Input nuclei labels array.
-        dilation_radius (int): Radius for dilating nuclei.
-        erosion_radius (int): Radius for eroding nuclei.
-        chunk_size (tuple): Chunk size for Dask array.
-
-    Returns:
-        dask.array: Cytoplasm simulation as a Dask array.
-    """
-    # Convert nuclei_labels to a Dask array if not already
-    if not isinstance(nuclei_labels, da.Array):
-        nuclei_labels = da.from_array(nuclei_labels, chunks=chunk_size)
-
-    # Function to process each chunk
-    def process_chunk(chunk, dilation_radius, erosion_radius):
-        # Dilate nuclei labels
-        dilated = cle.dilate_labels(chunk, radius=dilation_radius)
-        dilated = cle.pull(dilated)
-
-        # Optionally erode nuclei labels
-        if erosion_radius > 0:
-            eroded = cle.erode_labels(chunk, radius=erosion_radius)
-            eroded = cle.pull(eroded)
-            nuclei = eroded
-        else:
-            nuclei = chunk
-
-        # Subtract the nuclei from the dilated regions
-        cytoplasm = dilated.copy()
-        unique_labels = np.unique(nuclei)
-        for label in unique_labels:
-            if label != 0:  # Ignore background
-                cytoplasm[nuclei == label] = 0
-        return cytoplasm
-
-    # Map the processing function to each chunk
-    cytoplasm = nuclei_labels.map_blocks(
-        process_chunk,
-        dtype=nuclei_labels.dtype,
-        dilation_radius=dilation_radius,
-        erosion_radius=erosion_radius,
-    )
-
-    return cytoplasm
-
-def simulate_cytoplasm_dask_with_progress(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(512, 512)):
-    """
-    Simulate the cytoplasm from nuclei labels using Dask for large datasets and monitor progress.
-
-    Args:
-        nuclei_labels (ndarray or dask.array): Input nuclei labels array.
-        dilation_radius (int): Radius for dilating nuclei.
-        erosion_radius (int): Radius for eroding nuclei.
-        chunk_size (tuple): Chunk size for Dask array.
-
-    Returns:
-        ndarray: Cytoplasm simulation as a NumPy array (computed).
-    """
-    # Convert nuclei_labels to a Dask array if not already
-    if not isinstance(nuclei_labels, da.Array):
-        nuclei_labels = da.from_array(nuclei_labels, chunks=chunk_size)
-
-    # Function to process each chunk
-    def process_chunk(chunk, dilation_radius, erosion_radius):
-        # Dilate nuclei labels
-        dilated = cle.dilate_labels(chunk, radius=dilation_radius)
-        dilated = cle.pull(dilated)
-
-        # Optionally erode nuclei labels
-        if erosion_radius > 0:
-            eroded = cle.erode_labels(chunk, radius=erosion_radius)
-            eroded = cle.pull(eroded)
-            nuclei = eroded
-        else:
-            nuclei = chunk
-
-        # Subtract the nuclei from the dilated regions
-        cytoplasm = dilated.copy()
-        unique_labels = np.unique(nuclei)
-        for label in unique_labels:
-            if label != 0:  # Ignore background
-                cytoplasm[nuclei == label] = 0
-        return cytoplasm
-
-    # Map the processing function to each chunk
-    cytoplasm = nuclei_labels.map_blocks(
-        process_chunk,
-        dtype=nuclei_labels.dtype,
-        dilation_radius=dilation_radius,
-        erosion_radius=erosion_radius,
-    )
-
-    # Start the Dask client
-    with Client() as client:
-        print(f"Dask dashboard running at: {client.dashboard_link}")
-
-        # Use the progress bar to monitor computation
-        with ProgressBar():
-            result = cytoplasm.compute()  # Trigger computation
-
-    return result

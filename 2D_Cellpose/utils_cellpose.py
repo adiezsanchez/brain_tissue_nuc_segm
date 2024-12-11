@@ -278,19 +278,7 @@ def check_filenames(images, rois):
     else:
         print("No files missing in rois list.")
 
-def simulate_cytoplasm(nuclei_labels, dilation_radius = 2, erosion_radius = 0):
-
-    # Dilate nuclei labels to simulate the surrounding cytoplasm
-    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
-    cyto_nuclei_labels = cle.pull(cyto_nuclei_labels)
-    cytoplasm = cyto_nuclei_labels
-
-    # Create a copy of dilated_nuclei to modify
-    # cytoplasm = cyto_nuclei_labels.copy()
-
-    # Get unique labels (excluding 0 which is background)
-    unique_labels = np.unique(nuclei_labels)
-    unique_labels = unique_labels[unique_labels != 0]
+def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
 
     if erosion_radius >= 1:
 
@@ -299,11 +287,14 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius = 2, erosion_radius = 0):
         eroded_nuclei_labels = cle.pull(eroded_nuclei_labels)
         nuclei_labels = eroded_nuclei_labels
 
-    # Iterate over each label and remove the corresponding pixels from dilated_nuclei
-    for label in unique_labels:
-        # Create a mask for the current label in filtered_nuclei
-        mask = (nuclei_labels == label)
-        # Set corresponding pixels in resulting_nuclei to zero
-        cytoplasm[mask] = 0
+    # Dilate nuclei labels to simulate the surrounding cytoplasm
+    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
+    cytoplasm = cle.pull(cyto_nuclei_labels)
+
+    # Create a binary mask of the nuclei
+    nuclei_mask = nuclei_labels > 0
+
+    # Set the corresponding values in the cyto_nuclei_labels array to zero
+    cytoplasm[nuclei_mask] = 0
 
     return cytoplasm
