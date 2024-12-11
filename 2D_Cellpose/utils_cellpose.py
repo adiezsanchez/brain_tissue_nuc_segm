@@ -298,3 +298,34 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
     cytoplasm[nuclei_mask] = 0
 
     return cytoplasm
+
+def simulate_cytoplasm_chunked_2d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(512, 512)):
+    # Initialize an empty array to store the cytoplasm labels
+    cytoplasm = np.zeros_like(nuclei_labels)
+    
+    # Iterate over the image in chunks along the x and y axes
+    for y in range(0, nuclei_labels.shape[0], chunk_size[0]):
+        for x in range(0, nuclei_labels.shape[1], chunk_size[1]):
+            # Slice the current chunk
+            chunk = nuclei_labels[y:y+chunk_size[0], x:x+chunk_size[1]]
+
+            # If erosion is required, erode the chunk
+            if erosion_radius >= 1:
+                eroded_chunk = cle.erode_labels(chunk, radius=erosion_radius)
+                eroded_chunk = cle.pull(eroded_chunk)
+                chunk = eroded_chunk
+
+            # Dilate the chunk to simulate cytoplasm
+            cyto_chunk = cle.dilate_labels(chunk, radius=dilation_radius)
+            cyto_chunk = cle.pull(cyto_chunk)
+
+            # Create a binary mask where the nuclei are present
+            chunk_mask = chunk > 0
+
+            # Set the corresponding cytoplasm areas to zero where nuclei are present
+            cyto_chunk[chunk_mask] = 0
+
+            # Place the processed chunk into the cytoplasm array
+            cytoplasm[y:y+chunk_size[0], x:x+chunk_size[1]] = cyto_chunk
+    
+    return cytoplasm
