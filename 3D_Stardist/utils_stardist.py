@@ -336,7 +336,7 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
 
     return cytoplasm
 
-def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 512, 512)):
+def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 1024, 1024)):
     cytoplasm = np.zeros_like(nuclei_labels)
     
     for z in range(0, nuclei_labels.shape[0], chunk_size[0]):
