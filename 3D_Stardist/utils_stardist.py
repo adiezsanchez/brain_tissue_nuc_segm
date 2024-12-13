@@ -63,12 +63,17 @@ def read_image (image, slicing_factor):
     else:
         print ("Implement new file reader")
 
-    # Apply slicing trick to reduce image size (xy resolution)
-    img = img[:, :, ::slicing_factor, ::slicing_factor]
-
-    # Feedback for researcher
     print(f"\n\nImage analyzed: {filename}")
     print(f"Original Array shape: {img.shape}")
+
+    # Apply slicing trick to reduce image size (xy resolution)
+    try:
+        img = img[:, :, ::slicing_factor, ::slicing_factor]
+    except IndexError as e:
+        print(f"Slicing Error: {e}")
+        print(f"Slicing parameters: {slicing_factor}")
+
+    # Feedback for researcher
     print(f"Compressed Array shape: {img.shape}")
 
     return img, filename
