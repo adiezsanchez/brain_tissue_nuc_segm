@@ -275,7 +275,7 @@ def segment_marker_positive_nuclei (nuclei_labels, marker_input, min_max_range, 
     nuclei_masks_bool = nuclei_labels.astype(bool)
 
     # Find nuclei that intersect with the marker signal defined range
-    nuclei_and_marker = nuclei_masks_bool & (min_max_range[0] < marker_mip) & (marker_mip < min_max_range[1])
+    nuclei_and_marker = nuclei_masks_bool & (min_max_range[0] < marker_mip) & (marker_mip <= min_max_range[1])
 
 
     # Create a 3D structuring element (cuboid)
