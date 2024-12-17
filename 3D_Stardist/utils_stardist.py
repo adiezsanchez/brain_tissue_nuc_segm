@@ -9,6 +9,7 @@ import tifffile
 import napari
 import numpy as np
 import os
+import pandas as pd
 from skimage import exposure, filters, measure
 from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
@@ -363,3 +364,65 @@ def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radi
                 cytoplasm[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cyto_chunk
     
     return cytoplasm
+
+def display_segm_in_napari(directory_path, segmentation_type, model_name, index, slicing_factor, method, images):
+
+    # Dinamically generate the results and nuclei_preds the user wants to explore
+    results_path = Path("./results") / directory_path.name / segmentation_type / model_name
+    nuclei_preds_path = directory_path / "nuclei_preds" / segmentation_type / model_name
+
+    # Load the corresponding BP_populations_marker_+_summary_{method}.csv
+    df = pd.read_csv(results_path / f"BP_populations_marker_+_summary_{method}.csv", index_col=0)
+
+    # Extract the value for the filename column at input index
+    filename = df.iloc[index]['filename']
+
+    # List of subfolder names
+    roi_names = [folder.name for folder in nuclei_preds_path.iterdir() if folder.is_dir()]
+
+    # Read the database containing all populations
+    per_label_df = pd.read_csv(results_path / f"BP_populations_marker_+_per_label_{method}.csv")
+
+    # Scan for the corresponding image path
+    for image in images:
+
+        # Open that filepath, load the image and display labels for all cell_populations
+        if filename in image:
+
+            # Generate maximum intensity projection and extract filename
+            img, filename = read_image(image, slicing_factor)
+
+            # Show image in Napari
+            viewer = napari.Viewer(ndisplay=2)
+            viewer.add_image(img)
+
+            for roi_name in roi_names:
+
+                nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
+                nuclei_labels = nuclei_labels[:, ::slicing_factor, ::slicing_factor]
+                viewer.add_labels(nuclei_labels, name=f"nuclei_{roi_name}")
+
+                # Filter based on ROI and filename
+                per_roi_df = per_label_df[per_label_df["ROI"] == roi_name]
+                per_filename_df = per_roi_df[per_roi_df["filename"] == filename]
+
+                # Identify cell population columns (those with boolean values)
+                cell_pop_cols = per_filename_df.select_dtypes(include=['bool']).columns
+
+                for cell_pop in cell_pop_cols:
+
+                    # Extract the labels corresponding to True values
+                    true_labels = per_filename_df[per_filename_df[cell_pop]]['label'].tolist()
+
+                    # Convert to a numpy array for better performance with np.isin()
+                    true_labels_array = np.array(true_labels)
+
+                    # Use the true_labels_array with np.isin()
+                    mask = np.isin(nuclei_labels, true_labels_array)
+
+                    # Use the mask to set values in 'nuclei_labels' that are not in 'label_values' to 0,
+                    # creating a new array 'filtered_labels' with only the specified values retained
+                    filtered_labels = np.where(mask, nuclei_labels, 0)
+
+                    # Add the resulting filtered labels to Napari
+                    viewer.add_labels(filtered_labels, name=f"{cell_pop}_in_{roi_name}")
