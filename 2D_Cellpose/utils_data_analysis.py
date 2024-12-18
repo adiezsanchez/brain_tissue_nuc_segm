@@ -72,11 +72,18 @@ def calculate_perc_pops (results_path, method, min_max_per_marker, cell_populati
         # Read the original per_label .csv
         df = pd.read_csv(csv, index_col=0)
 
-        # Classify cells based on subpopulations
-        df = classify_cells(df, method, min_max_per_marker, cell_populations)
+        if method == "coloc":
 
-        # Append to the list of DataFrames
-        dfs_to_concatenate.append(df)
+            # Append to the list of DataFrames
+            dfs_to_concatenate.append(df)
+
+        elif method == "avg_int":
+
+            # Classify cells based on subpopulations
+            df = classify_cells(df, method, min_max_per_marker, cell_populations)
+
+            # Append to the list of DataFrames
+            dfs_to_concatenate.append(df)
 
     # Concatenate all DataFrames
     final_df = pd.concat(dfs_to_concatenate, ignore_index=True)
