@@ -6,22 +6,24 @@ import plotly.express as px
 
 def classify_cells(df, method, min_max_per_marker, cell_populations):
 
-    # Select all column names in 'final_df' that contain the substring method (i.e. 'avg_int')
-    avg_int_columns = [col for col in df.columns if method in col]
+    if method == "avg_int":
 
-    for marker_analysis in min_max_per_marker:
+        # Select all column names in 'final_df' that contain the substring method (i.e. 'avg_int')
+        avg_int_columns = [col for col in df.columns if method in col]
 
-        marker = marker_analysis["marker"]
-        min_max_avg_int = marker_analysis["min_max"]
-        population = marker_analysis["population"]
+        for marker_analysis in min_max_per_marker:
 
-        # Retrieve the column name from which the avg_int values should be read
-        for column in avg_int_columns:
-            if marker in column:
-                column_name = column
+            marker = marker_analysis["marker"]
+            min_max_avg_int = marker_analysis["min_max"]
+            population = marker_analysis["population"]
 
-        # Define if each nuclei label is positive (True) or negative (False) for a particular marker/population
-        df[population] = (df[column_name] > min_max_avg_int[0]) & (df[column_name] < min_max_avg_int[1])
+            # Retrieve the column name from which the avg_int values should be read
+            for column in avg_int_columns:
+                if marker in column:
+                    column_name = column
+
+            # Define if each nuclei label is positive (True) or negative (False) for a particular marker/population
+            df[population] = (df[column_name] > min_max_avg_int[0]) & (df[column_name] < min_max_avg_int[1])
 
     # Define populations based on subpopulations
     for cell_population in cell_populations:
