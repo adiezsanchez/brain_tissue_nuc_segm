@@ -426,3 +426,21 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
 
                     # Add the resulting filtered labels to Napari
                     viewer.add_labels(filtered_labels, name=f"{cell_pop}_in_{roi_name}")
+
+def remap_labels(array):
+    """Reorganize label indentifiers so they have consecutive ids ranging from 1 to the maximum label of objects"""
+
+    # Get the unique labels (excluding 0)
+    unique_labels = np.unique(array[array > 0])
+
+    # Create a mapping from old label to new label
+    new_labels = np.arange(1, len(unique_labels) + 1)
+
+    # Create a dictionary for fast label mapping
+    label_mapping = dict(zip(unique_labels, new_labels))
+
+    # Use np.vectorize to remap the labels in the array, defaulting to 0 (background) for missing keys
+    vectorized_remap = np.vectorize(lambda x: label_mapping.get(x, 0))
+    remapped_array = vectorized_remap(array)
+    
+    return remapped_array
