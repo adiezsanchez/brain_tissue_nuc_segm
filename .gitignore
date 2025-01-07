@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # Data folder
+training_data
 raw_data
 results
 
