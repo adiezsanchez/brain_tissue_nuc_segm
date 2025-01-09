@@ -31,3 +31,37 @@ def plot_img_label(img, lbl, img_title="image (XY slice)", lbl_title="label (XY 
     al.imshow(lbl[z], cmap=lbl_cmap)
     al.set_title(lbl_title)
     plt.tight_layout()
+
+def random_fliprot(img, mask, axis=None): 
+    if axis is None:
+        axis = tuple(range(mask.ndim))
+    axis = tuple(axis)
+            
+    assert img.ndim>=mask.ndim
+    perm = tuple(np.random.permutation(axis))
+    transpose_axis = np.arange(mask.ndim)
+    for a, p in zip(axis, perm):
+        transpose_axis[a] = p
+    transpose_axis = tuple(transpose_axis)
+    img = img.transpose(transpose_axis + tuple(range(mask.ndim, img.ndim))) 
+    mask = mask.transpose(transpose_axis) 
+    for ax in axis: 
+        if np.random.rand() > 0.5:
+            img = np.flip(img, axis=ax)
+            mask = np.flip(mask, axis=ax)
+    return img, mask 
+
+def random_intensity_change(img):
+    img = img*np.random.uniform(0.6,2) + np.random.uniform(-0.2,0.2)
+    return img
+
+def augmenter(x, y):
+    """Augmentation of a single input/label image pair.
+    x is an input image
+    y is the corresponding ground-truth label image
+    """
+    # Note that we only use fliprots along axis=(1,2), i.e. the yx axis 
+    # as 3D microscopy acquisitions are usually not axially symmetric
+    x, y = random_fliprot(x, y, axis=(1,2))
+    x = random_intensity_change(x)
+    return x, y
