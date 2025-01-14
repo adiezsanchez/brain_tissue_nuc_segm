@@ -2,6 +2,7 @@ from tifffile import imread
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+from skimage import measure, segmentation
 from stardist import random_label_cmap
 
 np.random.seed(42)
@@ -31,6 +32,16 @@ def plot_img_label(img, lbl, img_title="image (XY slice)", lbl_title="label (XY 
     al.imshow(lbl[z], cmap=lbl_cmap)
     al.set_title(lbl_title)
     plt.tight_layout()
+
+def fix_overlapping_labels(lbl):
+    """If the most common neighboring label is 0 (background), the original label r.label is preserved.
+    Otherwise, the region is reassigned to the neighboring outer_label""" 
+    y = np.zeros_like(lbl) 
+    for r in measure.regionprops(lbl):  
+        outer = list(lbl[segmentation.find_boundaries(lbl==r.label, mode=  "outer")])  
+        outer_label = max(outer,key=outer.count)  
+        y[lbl==r.label] = r.label if outer_label==0 else outer_label 
+    return y 
 
 def random_fliprot(img, mask, axis=None): 
     if axis is None:
