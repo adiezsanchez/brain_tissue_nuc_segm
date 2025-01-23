@@ -343,7 +343,49 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
     return cytoplasm
 
 def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 1024, 1024)):
+    """
+    Simulates cytoplasm expansion around labeled nuclei in a 3D volume using chunked processing.
+    Nuclei region is masked out generating a hollow sphere around it.
+
+    Parameters:
+    nuclei_labels (ndarray): 3D array of labeled nuclei.
+    dilation_radius (int, optional): Radius for dilation of the nuclei. Default is 2.
+    erosion_radius (int, optional): Radius for erosion of the nuclei. Default is 0.
+    chunk_size (tuple, optional): Size of the chunks to process (z, y, x). Default is (1, 1024, 1024).
+
+    Returns:
+    ndarray: 3D array representing the simulated cytoplasm with nuclei regions removed. The values in the returned
+             array indicate the cytoplasm regions after dilation, with zero values corresponding to the original 
+             nuclei positions, ensuring no overlap.
+    """
     cytoplasm = np.zeros_like(nuclei_labels)
+    
+    # Process the data in chunks to optimize memory usage and allow processing of large datasets
+    for z in range(0, nuclei_labels.shape[0], chunk_size[0]):
+        for y in range(0, nuclei_labels.shape[1], chunk_size[1]):
+            for x in range(0, nuclei_labels.shape[2], chunk_size[2]):
+                chunk = nuclei_labels[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]]
+                
+                # Apply erosion only if the radius is greater than or equal to 1 to avoid unnecessary processing
+                if erosion_radius >= 1:
+                    eroded_chunk = cle.erode_labels(chunk, radius=erosion_radius)
+                    eroded_chunk = cle.pull(eroded_chunk)
+                    chunk = eroded_chunk
+
+                cyto_chunk = cle.dilate_labels(chunk, radius=dilation_radius)
+                cyto_chunk = cle.pull(cyto_chunk)
+
+                # Create a binary mask of the nuclei
+                chunk_mask = chunk > 0
+                # Set the corresponding values in the cyto_chunk array to zero
+                cyto_chunk[chunk_mask] = 0
+
+                cytoplasm[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cyto_chunk
+    
+    return cytoplasm
+
+def simulate_cell_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 1024, 1024)):
+    cell = np.zeros_like(nuclei_labels)
     
     for z in range(0, nuclei_labels.shape[0], chunk_size[0]):
         for y in range(0, nuclei_labels.shape[1], chunk_size[1]):
@@ -355,15 +397,12 @@ def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radi
                     eroded_chunk = cle.pull(eroded_chunk)
                     chunk = eroded_chunk
 
-                cyto_chunk = cle.dilate_labels(chunk, radius=dilation_radius)
-                cyto_chunk = cle.pull(cyto_chunk)
+                cell_chunk = cle.dilate_labels(chunk, radius=dilation_radius)
+                cell_chunk = cle.pull(cell_chunk)
 
-                chunk_mask = chunk > 0
-                cyto_chunk[chunk_mask] = 0
-
-                cytoplasm[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cyto_chunk
+                cell[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cell_chunk
     
-    return cytoplasm
+    return cell
 
 def display_segm_in_napari(directory_path, segmentation_type, model_name, index, slicing_factor, method, images):
 
