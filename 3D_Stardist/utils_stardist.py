@@ -39,8 +39,8 @@ def list_images (directory_path):
     return images
 
 
-def read_image (image, slicing_factor):
-    """Read raw image microscope files and return a numpy array """
+def read_image (image, slicing_factor_xy, slicing_factor_z):
+    """Read raw image microscope files, apply downsampling if needed and return filename and a numpy array"""
     # Read path storing raw image and extract filename
     file_path = Path(image)
     filename = file_path.stem
@@ -69,10 +69,10 @@ def read_image (image, slicing_factor):
 
     # Apply slicing trick to reduce image size (xy resolution)
     try:
-        img = img[:, :, ::slicing_factor, ::slicing_factor]
+        img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
     except IndexError as e:
         print(f"Slicing Error: {e}")
-        print(f"Slicing parameters: {slicing_factor}")
+        print(f"Slicing parameters: Slicing_XY:{slicing_factor_xy} Slicing_Z:{slicing_factor_z} ")
 
     # Feedback for researcher
     print(f"Compressed Array shape: {img.shape}")
