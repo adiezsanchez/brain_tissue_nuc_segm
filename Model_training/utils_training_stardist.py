@@ -76,3 +76,59 @@ def augmenter(x, y):
     x, y = random_fliprot(x, y, axis=(1,2))
     x = random_intensity_change(x)
     return x, y
+
+def ignore_xy_border_labels(labels, buffer_size=0, border_val=-1, out=None):
+    """Set objects connected to the x and y edges of the label image to -1 to be ignored during Stardist training.
+
+    Parameters
+    ----------
+    labels : (Z, Y, X) array of int or bool
+        Imaging data labels.
+    buffer_size : int, optional
+        The width of the border examined. Default is 0, meaning only objects touching
+        the very edge are removed.
+    border_val : float or int, optional
+        The value to assign to labels touching the border. Default is -1.
+    out : ndarray, optional
+        Array of the same shape as `labels`, into which the output is placed.
+        By default, a new array is created.
+
+    Returns
+    -------
+    out : (Z, Y, X) array
+        Imaging data labels with cleared (set to -1) x and y edge-connected objects.
+    """
+
+    # Ensure labels are int16 to allow negative values
+    labels = labels.astype(np.int16)
+
+    if any(buffer_size >= s for s in labels.shape[1:]):
+        raise ValueError("buffer size may not be greater than labels size in x or y dimensions")
+
+    if out is None:
+        out = labels.copy()
+
+    # Create borders in x and y dimensions only
+    borders = np.zeros_like(out, dtype=bool)
+    ext = buffer_size + 1
+
+    # Apply border mask to only x and y edges
+    borders[:, :ext, :] = True  # Front y-edge
+    borders[:, -ext:, :] = True  # Back y-edge
+    borders[:, :, :ext] = True  # Left x-edge
+    borders[:, :, -ext:] = True  # Right x-edge
+
+    # Re-label the image
+    labeled_img, number = measure.label(out, background=0, return_num=True)
+
+    # Identify objects connected to x or y borders
+    borders_indices = np.unique(labeled_img[borders])
+    #print("Border-connected labels:", borders_indices)  # Debugging step
+
+    # Create mask for pixels belonging to border-connected labels
+    label_mask = np.isin(labeled_img, borders_indices)
+
+    # Only modify label pixels, keep background (0) unchanged
+    out[(label_mask) & (out > 0)] = border_val  # Set only labels to `border_val`, keep background as 0
+
+    return out
