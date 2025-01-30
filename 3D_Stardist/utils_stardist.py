@@ -404,7 +404,13 @@ def simulate_cell_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0,
     
     return cell
 
-def display_segm_in_napari(directory_path, segmentation_type, model_name, index, slicing_factor_xy, slicing_factor_z, method, images):
+def display_segm_in_napari(directory_path, segmentation_type, model_name, index, slicing_factor_xy, slicing_factor_z, compression_factor, method, images):
+
+    if compression_factor == None:
+        compression_factor = 1
+
+    if slicing_factor_xy == None:
+        slicing_factor_xy = 1
 
     # Dinamically generate the results and nuclei_preds the user wants to explore
     results_path = Path("./results") / directory_path.name / segmentation_type / model_name
@@ -429,7 +435,7 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
         if filename in image:
 
             # Generate maximum intensity projection and extract filename
-            img, filename = read_image(image, slicing_factor_xy, slicing_factor_z)
+            img, filename = read_image(image, (slicing_factor_xy * compression_factor), (slicing_factor_z))
 
             # Show image in Napari
             viewer = napari.Viewer(ndisplay=2)
@@ -438,7 +444,7 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
             for roi_name in roi_names:
 
                 nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
-                nuclei_labels = nuclei_labels[::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
+                nuclei_labels = nuclei_labels[:, ::compression_factor, ::compression_factor]
                 viewer.add_labels(nuclei_labels, name=f"nuclei_{roi_name}")
 
                 # Filter based on ROI and filename
