@@ -1,6 +1,4 @@
-from stardist.models import StarDist3D
 from csbdeep.utils import normalize
-import tensorflow as tf
 from tensorflow.python.client import device_lib
 from pathlib import Path
 import czifile
@@ -92,6 +90,47 @@ def extract_nuclei_stack (img, nuclei_channel):
     nuclei_img = img[nuclei_channel, :, :, :]
 
     return nuclei_img
+
+def get_stardist_model(segmentation_type, name, basedir='stardist_models'):
+    """
+    Load a StarDist model based on the specified segmentation type.
+
+    Parameters:
+    segmentation_type (str): Either '2D' or '3D', specifying the type of model to load.
+    name (str): The name of the trained model to load.
+    basedir (str, optional): Directory where custom trained models are stored. Default is 'stardist_models'.
+
+    Returns:
+    StarDist2D or StarDist3D model: The loaded StarDist model.
+
+    If the specified model is not found, a pretrained model is loaded instead:
+    - '2D_versatile_fluo' for 2D models
+    - '3D_demo' for 3D models
+
+    Raises:
+    ValueError: If an invalid segmentation_type is provided.
+    """
+
+    if segmentation_type == "2D":
+        from stardist.models import StarDist2D
+        print(f"Loading {segmentation_type} segmentation model")
+        try:
+            return StarDist2D(None, name, basedir)
+        except FileNotFoundError:
+            print(f"Model {name} not found. Loading pretrained Stardist model '2D_versatile_fluo'.")
+            return StarDist2D.from_pretrained("2D_versatile_fluo")
+
+    elif segmentation_type == "3D":
+        from stardist.models import StarDist3D
+        print(f"Loading {segmentation_type} segmentation model")
+        try:
+            return StarDist3D(None, name, basedir)
+        except FileNotFoundError:
+            print(f"Model {name} not found. Loading pretrained Stardist model '3D_demo'.")
+            return StarDist3D.from_pretrained("3D_demo")
+
+    else:
+        raise ValueError("segmentation_type must be '2D' or '3D'")
 
 def segment_nuclei_3d(nuclei_img, model, n_tiles=None):
     
