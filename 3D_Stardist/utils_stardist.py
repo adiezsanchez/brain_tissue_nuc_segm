@@ -140,6 +140,18 @@ def segment_nuclei_3d(nuclei_img, model, n_tiles=None):
 
     return nuclei_labels
 
+def segment_nuclei(nuclei_img, segmentation_type, model, n_tiles=None):
+
+    if segmentation_type == "2D":
+        # Ignore the z-dimension of the n_tiles tuple (x, y, z)
+        n_tiles = n_tiles[-2:]
+    
+    normalized = normalize(nuclei_img)
+
+    nuclei_labels, _ = model.predict_instances(normalized, n_tiles=n_tiles, show_tile_progress=True)
+
+    return nuclei_labels
+
 def save_rois(viewer, directory_path, filename):
 
     """Code snippet to save cropped regions (ROIs) defined by labels as .tiff files"""
