@@ -279,39 +279,6 @@ def process_labels (viewer, directory_path, filename):
 
     return layer_names, layer_labels
 
-def segment_nuclei_2d (nuclei_input, gaussian_sigma = 0, cellpose_nuclei_diameter = None):
-
-    if len(nuclei_input.shape) == 3:
-        # Perform maximum intensity projection (MIP) from the stack
-        nuclei_mip = np.max(nuclei_input, axis=0)
-
-    elif len(nuclei_input.shape) == 2:
-        # Input is already a maximum intensity projection (MIP)
-        nuclei_mip = nuclei_input
-
-    # Might need to perform a Gaussian-blur before
-    post_gaussian_img = filters.gaussian(
-        nuclei_mip, sigma=gaussian_sigma
-    )
-
-    # Apply Contrast Stretching to improve Cellpose detection of overly bright nuclei
-    p2, p98 = np.percentile(post_gaussian_img, (2, 98))
-    img_rescale = exposure.rescale_intensity(
-        post_gaussian_img, in_range=(p2, p98)
-    )
-
-    # Predict nuclei nuclei_masks using cellpose
-    nuclei_labels, flows, styles, diams = model.eval(
-        img_rescale,
-        diameter=cellpose_nuclei_diameter,
-        channels=[0, 0],
-        net_avg=False,
-    )
-    if len(nuclei_input.shape) == 3:
-        return nuclei_mip, nuclei_labels
-    elif len(nuclei_input.shape) == 2:
-        return nuclei_labels
-
 def segment_marker_positive_nuclei (nuclei_labels, marker_input, min_max_range, erosion_factor):
 
     if len(marker_input.shape) == 3:
@@ -372,7 +339,7 @@ def check_filenames(images, rois):
     else:
         print("No files missing in rois list.")
 
-def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
+def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius=0):
 
     if erosion_radius >= 1:
 
@@ -392,6 +359,21 @@ def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius = 0):
     cytoplasm[nuclei_mask] = 0
 
     return cytoplasm
+
+def simulate_cell(nuclei_labels, dilation_radius=2, erosion_radius=0):
+
+    if erosion_radius >= 1:
+
+        # Erode nuclei_labels to maintain a closed cytoplasmic region when labels are touching (if needed)
+        eroded_nuclei_labels = cle.erode_labels(nuclei_labels, radius=erosion_radius)
+        eroded_nuclei_labels = cle.pull(eroded_nuclei_labels)
+        nuclei_labels = eroded_nuclei_labels
+
+    # Dilate nuclei labels to simulate the surrounding cytoplasm
+    cyto_nuclei_labels = cle.dilate_labels(nuclei_labels, radius=dilation_radius)
+    cell = cle.pull(cyto_nuclei_labels)
+
+    return cell
 
 def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 1024, 1024)):
     """
