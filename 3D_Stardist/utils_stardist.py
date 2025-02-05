@@ -470,14 +470,19 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
             # Generate maximum intensity projection and extract filename
             img, filename = read_image(image, (slicing_factor_xy * compression_factor), (slicing_factor_z))
 
-            # Show image in Napari
+            # Show input image in Napari (2D or 3D-stack)
             viewer = napari.Viewer(ndisplay=2)
-            viewer.add_image(img)
+            if segmentation_type == "3D":
+                viewer.add_image(img)
+            elif segmentation_type == "2D":
+                img_mip = maximum_intensity_projection(img)
+                viewer.add_image(img_mip)
 
             for roi_name in roi_names:
 
                 nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
-                nuclei_labels = nuclei_labels[:, ::compression_factor, ::compression_factor]
+                # ... ensures that all preceding dimensions (whether 2D or 3D) are retained without slicing.
+                nuclei_labels = nuclei_labels[..., ::compression_factor, ::compression_factor]
                 viewer.add_labels(nuclei_labels, name=f"nuclei_{roi_name}")
 
                 # Filter based on ROI and filename
