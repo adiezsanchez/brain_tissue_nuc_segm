@@ -8,7 +8,7 @@ import napari
 import numpy as np
 import os
 import pandas as pd
-from skimage import exposure, filters, measure
+from skimage import measure
 from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
 
@@ -131,14 +131,6 @@ def get_stardist_model(segmentation_type, name, basedir='stardist_models'):
 
     else:
         raise ValueError("segmentation_type must be '2D' or '3D'")
-
-def segment_nuclei_3d(nuclei_img, model, n_tiles=None):
-    
-    normalized = normalize(nuclei_img)
-
-    nuclei_labels, _ = model.predict_instances(normalized, n_tiles=n_tiles, show_tile_progress=True)
-
-    return nuclei_labels
 
 def segment_nuclei(nuclei_img, segmentation_type, model, n_tiles=None):
 
@@ -315,28 +307,6 @@ def segment_marker_positive_labels (labels, marker_input, min_max_range, erosion
         processed_region_labels[labels == label] = label
 
     return label_and_marker, eroded_label_and_marker, marker, processed_region_labels
-
-def check_filenames(images, rois):
-
-    # Extract the base filenames without extensions using Path.stem
-    images_base = [Path(file).stem for file in images]
-    rois_base = [Path(file).stem for file in rois]
-
-    # Check for missing files in images list
-    missing_in_images = [file for file in rois_base if file not in images_base]
-    if missing_in_images:
-        for file in missing_in_images:
-            print(f"Missing in images list: {file}")
-    else:
-        print("No files missing in images list.")
-
-    # Check for missing files in rois list
-    missing_in_rois = [file for file in images_base if file not in rois_base]
-    if missing_in_rois:
-        for file in missing_in_rois:
-            print(f"Missing in rois list: {file}")
-    else:
-        print("No files missing in rois list.")
 
 def simulate_cytoplasm(nuclei_labels, dilation_radius=2, erosion_radius=0):
 
