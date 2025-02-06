@@ -279,43 +279,42 @@ def process_labels (viewer, directory_path, filename):
 
     return layer_names, layer_labels
 
-def segment_marker_positive_nuclei (nuclei_labels, marker_input, min_max_range, erosion_factor):
+def segment_marker_positive_labels (labels, marker_input, min_max_range, erosion_factor, segmentation_type):
 
-    if len(marker_input.shape) == 3:
+    if segmentation_type == "2D":
         # Perform maximum intensity projection from the stack
-        marker_mip = np.max(marker_input, axis=0)
+        marker = np.max(marker_input, axis=0)
+        # Create a 2D structuring element (square)
+        structuring_element = np.ones((erosion_factor, erosion_factor), dtype=bool)
 
-    elif len(marker_input.shape) == 2:
-        # Input is already a maximum intensity projection (MIP)
-        marker_mip = marker_input
+    elif segmentation_type == "3D":
+        # Perform maximum intensity projection from the stack
+        marker = np.max(marker_input, axis=0)
+        # Create a 3D structuring element (cuboid)
+        structuring_element = np.ones((erosion_factor, erosion_factor, erosion_factor), dtype=bool)
 
-    # Convert nuclei_masks to boolean mask
-    nuclei_masks_bool = nuclei_labels.astype(bool)
+    # Convert label_masks to boolean mask
+    label_masks_bool = labels.astype(bool)
 
-    # Find nuclei that intersect with the marker signal defined range
-    nuclei_and_marker = nuclei_masks_bool & (min_max_range[0] < marker_mip) & (marker_mip <= min_max_range[1])
+    # Find labels that intersect with the marker signal defined range
+    label_and_marker = label_masks_bool & (min_max_range[0] < marker) & (marker <= min_max_range[1])
 
-
-    # Create a 3D structuring element (cuboid)
-    structuring_element = np.ones((erosion_factor, erosion_factor, erosion_factor), dtype=bool)
-    eroded_nuclei_and_marker = binary_erosion(nuclei_and_marker, structure=structuring_element)
-
-    # Label the eroded nuclei and marker mask
-    labeled_nuclei, num_labels = measure.label(nuclei_labels, return_num=True)
+    # Perform erosion with structuring element (2D or 3D)
+    eroded_label_and_marker = binary_erosion(label_and_marker, structure=structuring_element)
 
     # Use NumPy's advanced indexing to identify labels that intersect with the eroded marker mask
-    intersecting_labels = np.unique(labeled_nuclei[eroded_nuclei_and_marker])
+    intersecting_labels = np.unique(labels[eroded_label_and_marker])
     intersecting_labels = intersecting_labels[intersecting_labels != 0]  # Remove background label
 
-    # Create an empty array for the final labeled nuclei
-    processed_region_labels = np.zeros_like(labeled_nuclei, dtype=int)
+    # Create an empty array for the final labeled labels
+    processed_region_labels = np.zeros_like(labels, dtype=int)
 
-    # Recover the full extent of nuclei that intersect with the marker mask
+    # Recover the full extent of input labels that intersect with the marker mask
     for idx, label in enumerate(intersecting_labels):
-        # Recover the entire region of the original nuclei_mask that has this label
-        processed_region_labels[labeled_nuclei == label] = label
+        # Recover the entire region of the original label_mask that has this label
+        processed_region_labels[labels == label] = label
 
-    return nuclei_and_marker, eroded_nuclei_and_marker, marker_mip, processed_region_labels
+    return label_and_marker, eroded_label_and_marker, marker, processed_region_labels
 
 def check_filenames(images, rois):
 
