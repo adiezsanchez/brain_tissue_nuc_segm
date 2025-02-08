@@ -280,8 +280,8 @@ def segment_marker_positive_labels (labels, marker_input, min_max_range, erosion
         structuring_element = np.ones((erosion_factor, erosion_factor), dtype=bool)
 
     elif segmentation_type == "3D":
-        # Perform maximum intensity projection from the stack
-        marker = np.max(marker_input, axis=0)
+        # Marker stack remains as a 3D-array with original intensities
+        marker = marker_input
         # Create a 3D structuring element (cuboid)
         structuring_element = np.ones((erosion_factor, erosion_factor, erosion_factor), dtype=bool)
 
