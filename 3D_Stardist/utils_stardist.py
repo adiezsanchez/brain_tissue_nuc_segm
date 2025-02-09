@@ -144,6 +144,133 @@ def segment_nuclei(nuclei_img, segmentation_type, model, n_tiles=None):
 
     return nuclei_labels
 
+def extract_contour(roi: np.ndarray) -> np.ndarray:
+    """
+    Extracts the contour of a binary ROI image and returns a binary mask 
+    where the contour pixels are set to 1.
+
+    Parameters:
+    -----------
+    roi : np.ndarray
+        A 2D NumPy array of dtype int8 representing the binary region of interest (ROI),
+        where nonzero values indicate the foreground.
+
+    Returns:
+    --------
+    np.ndarray
+        A binary mask of the same shape as `roi`, where contour pixels are set to 1,
+        and all other pixels are 0.
+
+    Notes:
+    ------
+    - Uses `skimage.measure.find_contours` to detect continuous contour points.
+    - Vectorized operations are used for efficiency.
+    - The function assumes that `roi` is a binary image (values of 0 or 1).
+
+    Example:
+    --------
+    >>> import numpy as np
+    >>> from skimage.draw import disk
+    >>> roi = np.zeros((100, 100), dtype=np.int8)
+    >>> rr, cc = disk((50, 50), 20)
+    >>> roi[rr, cc] = 1
+    >>> contour_mask = extract_contour(roi)
+    >>> print(contour_mask.sum())  # Nonzero values represent contour pixels
+    """
+    # Find contours, output is a list of (N, 2) arrays representing continuous (x, y) coordinates of contour points
+    contours = measure.find_contours(roi, level=0.5)
+
+    # Concatenate all contour points
+    all_contours = np.vstack(contours)  # Shape: (N, 2)
+
+    # Round to integer pixel indices
+    all_contours = np.round(all_contours).astype(int)
+
+    # Clip to ensure indices are within image bounds
+    all_contours[:, 0] = np.clip(all_contours[:, 0], 0, roi.shape[0] - 1)
+    all_contours[:, 1] = np.clip(all_contours[:, 1], 0, roi.shape[1] - 1)
+
+    # Create an empty binary mask
+    contour_mask = np.zeros_like(roi, dtype=np.uint8)
+
+    # Set pixels at contour locations to 1 using NumPy advanced indexing
+    contour_mask[all_contours[:, 0], all_contours[:, 1]] = 1
+    
+    return contour_mask
+
+def remove_labels_touching_roi_edge(labels, roi):
+    """
+    Removes labels that are touching the edges of a binary region of interest (ROI) in a 2D or 3D array containing labels.
+
+    Parameters:
+    -----------
+    labels : np.ndarray
+        A 2D or 3D NumPy array of labeled structures (i.e. nuclei), where each unique integer value represents a different label
+        and `0` represents the background.
+        
+    roi : np.ndarray
+        A 2D NumPy array representing the binary region of interest (ROI), where nonzero values indicate the foreground.
+        The function will either generate a border contour if `roi` is filled entirely with ones, or use the ROI to
+        generate contours of the region.
+
+    Returns:
+    --------
+    np.ndarray
+        A 2D or 3D array with the labels that are touching the edges of the ROI removed (set to 0).
+
+    Notes:
+    ------
+    - The function generates a contour for the ROI and uses it to identify labels that intersect with the ROI's contour.
+    - For 3D images, the function will extend the 2D contour mask across the entire stack of slices.
+    - The function assumes that `labels` is a labeled image and `roi` is a binary mask image (values of 0 or 1).
+    - This function relabels the remaining labels in the output using `skimage.measure.label()` to ensure continuous labeling.
+
+    Example:
+    --------
+    >>> labels = np.array([[1, 1, 0], [2, 1, 0], [2, 0, 0]])
+    >>> roi = np.array([[0, 1, 1], [0, 1, 0], [0, 0, 0]])
+    >>> filtered_labels = remove_labels_touching_roi_edge(labels, roi)
+    >>> print(filtered_labels)
+    """
+    # Check if roi covers the entire image (all values stored in roi == 1):
+    if np.all(roi == 1):
+        #  Generate a contour that covers the border of the image
+        contour_mask = np.zeros(roi.shape, dtype=np.int8)
+
+        # Set the outer border to 1 
+        contour_mask[0, :] = 1  # Top edge
+        contour_mask[-1, :] = 1  # Bottom edge
+        contour_mask[:, 0] = 1  # Left edge
+        contour_mask[:, -1] = 1  # Right edge
+
+    # Otherwise extract the contour of a user-defined roi:
+    else:
+        contour_mask = extract_contour(roi)
+
+    # 3D segmentation logic, extend 2D mask across the entire stack volume
+    if len(labels.shape) == 3:
+        # Extract the number of z-slices to extend the mask into a 3D-volume
+        slice_nr = labels.shape[0]
+
+        # Extend the mask across the entire volume
+        contour_mask = np.tile(contour_mask, (slice_nr, 1, 1))
+
+    # Convert contour_mask to boolean inplace
+    contour_mask = contour_mask.view(bool)  # ✅ Avoid extra copy
+
+    # Identify labels that intersect with the ROI contour
+    intersecting_labels = np.unique(labels[contour_mask])
+    intersecting_labels = intersecting_labels[intersecting_labels != 0]  # Remove background label
+
+    # Remove intersecting labels inplace
+    np.putmask(labels, np.isin(labels, intersecting_labels), 0)  # ✅ Modify `labels` inplace
+    del intersecting_labels  # ✅ Free up memory immediately
+
+    # Relabel labels inplace (relabel modifies array in-place when return is assigned)
+    labels = measure.label(labels, connectivity=1)
+
+    return labels
+
 def save_rois(viewer, directory_path, filename):
 
     """Code snippet to save cropped regions (ROIs) defined by labels as .tiff files"""
@@ -478,21 +605,3 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
 
                     # Add the resulting filtered labels to Napari
                     viewer.add_labels(filtered_labels, name=f"{cell_pop}_in_{roi_name}")
-
-def remap_labels(array):
-    """Reorganize label indentifiers so they have consecutive ids ranging from 1 to the maximum label of objects"""
-
-    # Get the unique labels (excluding 0)
-    unique_labels = np.unique(array[array > 0])
-
-    # Create a mapping from old label to new label
-    new_labels = np.arange(1, len(unique_labels) + 1)
-
-    # Create a dictionary for fast label mapping
-    label_mapping = dict(zip(unique_labels, new_labels))
-
-    # Use np.vectorize to remap the labels in the array, defaulting to 0 (background) for missing keys
-    vectorized_remap = np.vectorize(lambda x: label_mapping.get(x, 0))
-    remapped_array = vectorized_remap(array)
-    
-    return remapped_array
