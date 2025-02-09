@@ -77,6 +77,30 @@ def augmenter(x, y):
     x = random_intensity_change(x)
     return x, y
 
+def random_fliprot_2D(img, mask): 
+    assert img.ndim >= mask.ndim
+    axes = tuple(range(mask.ndim))
+    perm = tuple(np.random.permutation(axes))
+    img = img.transpose(perm + tuple(range(mask.ndim, img.ndim))) 
+    mask = mask.transpose(perm) 
+    for ax in axes: 
+        if np.random.rand() > 0.5:
+            img = np.flip(img, axis=ax)
+            mask = np.flip(mask, axis=ax)
+    return img, mask 
+
+def augmenter_2D(x,y):
+    """Augmentation of a single input/label image pair.
+    x is an input image
+    y is the corresponding ground-truth label image
+    """
+    x, y = random_fliprot_2D(x, y)
+    x = random_intensity_change(x)
+    # add some gaussian noise
+    sig = 0.02*np.random.uniform(0,1)
+    x = x + sig*np.random.normal(0,1,x.shape)
+    return x, y
+
 def ignore_xy_border_labels(labels, buffer_size=0, border_val=-1, out=None):
     """Set objects connected to the x and y edges of the label image to -1 to be ignored during Stardist training.
 
