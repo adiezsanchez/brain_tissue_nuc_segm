@@ -22,7 +22,7 @@ def read_image(image, slicing_factor):
 def process_images(image_list, slicing_factor):
     return list(map(lambda img: read_image(img, slicing_factor), image_list))
 
-def plot_img_label(img, lbl, img_title="image (XY slice)", lbl_title="label (XY slice)", z=None, **kwargs):
+def plot_img_label_3D(img, lbl, img_title="image (XY slice)", lbl_title="label (XY slice)", z=None, **kwargs):
     if z is None:
         z = img.shape[0] // 2    
     fig, (ai,al) = plt.subplots(1,2, figsize=(12,5), gridspec_kw=dict(width_ratios=(1.25,1)))
@@ -30,6 +30,15 @@ def plot_img_label(img, lbl, img_title="image (XY slice)", lbl_title="label (XY 
     ai.set_title(img_title)    
     fig.colorbar(im, ax=ai)
     al.imshow(lbl[z], cmap=lbl_cmap)
+    al.set_title(lbl_title)
+    plt.tight_layout()
+
+def plot_img_label_2D(img, lbl, img_title="image (XY)", lbl_title="label (XY)"):  
+    fig, (ai,al) = plt.subplots(1,2, figsize=(12,5), gridspec_kw=dict(width_ratios=(1.25,1)))
+    im = ai.imshow(img, cmap='gray', clim=(0,1))
+    ai.set_title(img_title)    
+    fig.colorbar(im, ax=ai)
+    al.imshow(lbl, cmap=lbl_cmap)
     al.set_title(lbl_title)
     plt.tight_layout()
 
@@ -43,7 +52,7 @@ def fix_overlapping_labels(lbl):
         y[lbl==r.label] = r.label if outer_label==0 else outer_label 
     return y 
 
-def random_fliprot(img, mask, axis=None): 
+def random_fliprot_3D(img, mask, axis=None): 
     if axis is None:
         axis = tuple(range(mask.ndim))
     axis = tuple(axis)
@@ -66,14 +75,14 @@ def random_intensity_change(img):
     img = img*np.random.uniform(0.6,2) + np.random.uniform(-0.2,0.2)
     return img
 
-def augmenter(x, y):
+def augmenter_3D(x, y):
     """Augmentation of a single input/label image pair.
     x is an input image
     y is the corresponding ground-truth label image
     """
     # Note that we only use fliprots along axis=(1,2), i.e. the yx axis 
     # as 3D microscopy acquisitions are usually not axially symmetric
-    x, y = random_fliprot(x, y, axis=(1,2))
+    x, y = random_fliprot_3D(x, y, axis=(1,2))
     x = random_intensity_change(x)
     return x, y
 
