@@ -9,13 +9,28 @@ Segmentation of nuclear signals in fluorescently stained mouse brain tissue sect
 
 1. In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments using Mamba. See instructions [here](https://biapol.github.io/blog/mara_lampert/getting_started_with_mambaforge_and_python/readme.html).
 
-2. Then you will need to create a couple of virtual environment using the command below or from the .yml file in the envs folder (recommended, see step 3):
+2. Then you will need to create a couple of virtual environment using the command below or from the .yml file in the envs folder (see step 3):
 
     For brain_nuc_stardist:
 
-   <code>mamba create --name brain_nuc_stardist python=3.9 devbio-napari csbdeep stardist plotly pyqt nd2 cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
+   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype plotly pyqt nbformat nd2 czifile cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
+
    <code>mamba activate brain_nuc_stardist</code>
+
    <code>pip install "tensorflow<2.11"</code>
+
+   <code>pip install stardist==0.8.5</code>
+
+   <code>pip install gputools==0.2.15</code>
+
+   <code>pip install edt</code>
+
+   <code>pip install reikna==0.8.0</code>
+
+   <code>pip install numpy==1.26.4</code>
+
+   <code>pip install numba==0.59.1</code>
+
 
    For brain_nuc_cellpose:
    <code>mamba create -n brain_nuc_cellpose python=3.11 devbio-napari cellpose=3.0.11 pytorch==2.5.0 torchvision==0.20.0 pytorch-cuda=12.1 plotly pyqt python-kaleido nd2 -c conda-forge -c pytorch -c nvidia</code>
