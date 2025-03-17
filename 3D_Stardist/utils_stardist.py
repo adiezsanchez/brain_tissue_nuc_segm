@@ -11,6 +11,7 @@ import pandas as pd
 from skimage import measure
 from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
+import warnings
 
 cle.select_device("RTX")
 
@@ -510,7 +511,14 @@ def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radi
                 cyto_chunk[chunk_mask] = 0
 
                 cytoplasm[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cyto_chunk
-    
+
+    # Compare unique labels directly as numpy arrays
+    nuclei_labels_unique = np.unique(nuclei_labels)
+    cytoplasm_labels_unique = np.unique(cytoplasm)
+
+    if not np.array_equal(nuclei_labels_unique, cytoplasm_labels_unique):
+        warnings.warn(f"Mismatch in label sets! Nuclei labels: {len(nuclei_labels_unique)}, Cytoplasm labels: {len(cytoplasm_labels_unique)}")
+
     return cytoplasm
 
 def simulate_cell_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0, chunk_size=(1, 1024, 1024)):
@@ -530,6 +538,13 @@ def simulate_cell_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radius=0,
                 cell_chunk = cle.pull(cell_chunk)
 
                 cell[z:z+chunk_size[0], y:y+chunk_size[1], x:x+chunk_size[2]] = cell_chunk
+
+    # Compare unique labels directly as numpy arrays
+    nuclei_labels_unique = np.unique(nuclei_labels)
+    cell_labels_unique = np.unique(cell)
+
+    if not np.array_equal(nuclei_labels_unique, cell_labels_unique):
+        warnings.warn(f"Mismatch in label sets! Nuclei labels: {len(nuclei_labels_unique)}, Cell labels: {len(cell_labels_unique)}")
     
     return cell
 
