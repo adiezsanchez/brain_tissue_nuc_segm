@@ -517,7 +517,27 @@ def simulate_cytoplasm_chunked_3d(nuclei_labels, dilation_radius=2, erosion_radi
     cytoplasm_labels_unique = np.unique(cytoplasm)
 
     if not np.array_equal(nuclei_labels_unique, cytoplasm_labels_unique):
-        warnings.warn(f"Mismatch in label sets! Nuclei labels: {len(nuclei_labels_unique)}, Cytoplasm labels: {len(cytoplasm_labels_unique)}")
+
+        # Identify nuclei labels that are missing in the cytoplasm
+        # This can occur when a nucleus is completely surrounded by other labels,
+        # preventing it from expanding during the dilation process.
+        # In such cases, the dilated nucleus remains the same size as the original.
+        # When the original nucleus is subtracted from the dilated result,
+        # it disappears entirely, since both have the same size and shape.
+        missing_in_cytoplasm = np.setdiff1d(nuclei_labels_unique, cytoplasm_labels_unique)
+
+        # Calculate the percentage of lost labels and determine if the loss is significant (>1%).
+        loss_percentage = round((len(missing_in_cytoplasm) / len(nuclei_labels_unique)) * 100, 2)
+
+        if loss_percentage > 1:
+            warnings.warn(
+                f"\nMismatch in label sets! "
+                f"Nuclei labels: {len(nuclei_labels_unique)}, Cytoplasm labels: {len(cytoplasm_labels_unique)}.\n"
+                f"Missing labels in Cytoplasm: {missing_in_cytoplasm[:10]}{'...' if len(missing_in_cytoplasm) > 10 else ''}\n"
+                f"{loss_percentage}% of cells lost during nuclei subtraction operation.\n"
+                f"If this percentage is too high, consider using 'cell' instead of 'cytoplasm' for marker placement. "
+                f"The nuclei may be too densely packed."
+            )
 
     return cytoplasm
 
