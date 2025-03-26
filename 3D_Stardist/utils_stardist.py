@@ -579,6 +579,7 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
     # Dinamically generate the results and nuclei_preds the user wants to explore
     results_path = Path("./results") / directory_path.name / segmentation_type / model_name
     nuclei_preds_path = directory_path / "nuclei_preds" / segmentation_type / model_name
+    roi_path = directory_path / "ROIs"
 
     # Load the corresponding BP_populations_marker_+_summary_{method}.csv
     df = pd.read_csv(results_path / f"BP_populations_marker_+_summary_{method}.csv", index_col=0)
@@ -611,7 +612,25 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
 
             for roi_name in roi_names:
 
+                # Read the user defined ROIs, in case of full image analysis generate a label covering the entire image
+                try:
+                    # Read previously defined ROIs
+                    user_roi = tifffile.imread(roi_path / roi_name / f"{filename}.tiff")
+
+                except FileNotFoundError:
+                    # Extract the xy dimensions of the input image
+                    img_mip = maximum_intensity_projection(img) 
+                    img_shape = img_mip.shape
+                    img_xy_dims = img_shape[-2:]
+
+                    # Create a label covering the entire image
+                    user_roi = np.ones(img_xy_dims).astype(np.uint8)
+
                 nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
+                print(f"Pre-computed nuclei labels found for {filename}")
+                # Remove labels touching ROI edge (in place for nuclei predictions generated before "remove_labels_touchin_roi_edge" was implemented)
+                print("Removing nuclei labels touching ROI edge")
+                nuclei_labels = remove_labels_touching_roi_edge(nuclei_labels, user_roi)
                 # ... ensures that all preceding dimensions (whether 2D or 3D) are retained without slicing.
                 nuclei_labels = nuclei_labels[..., ::compression_factor, ::compression_factor]
                 viewer.add_labels(nuclei_labels, name=f"nuclei_{roi_name}")
