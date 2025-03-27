@@ -60,7 +60,7 @@ def calculate_perc_pops (results_path, method, min_max_per_marker, cell_populati
     per_label_csvs = []
 
     for file_path in results_path.glob("*.csv"):
-        if method in str(file_path) and "BP" not in str(file_path) and "SP" not in str(file_path):
+        if method in str(file_path) and "BP_" not in str(file_path) and "SP_" not in str(file_path):
             per_label_csvs.append(file_path)
 
     # Define the .csv path for the results
