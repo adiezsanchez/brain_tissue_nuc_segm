@@ -626,13 +626,14 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
                     # Create a label covering the entire image
                     user_roi = np.ones(img_xy_dims).astype(np.uint8)
 
+                nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
+
                 # Ensure user_roi and nuclei_labels match in shape (quickfix)
                 print('Reshaping user_roi to match nuclei_labels...')
                 if user_roi.shape != nuclei_labels.shape[-2:]:
                     from skimage.transform import resize
                     user_roi = resize(user_roi, nuclei_labels.shape[-2:], order=0, preserve_range=True).astype(np.uint8)
 
-                nuclei_labels = tifffile.imread(nuclei_preds_path / roi_name / f"{filename}.tiff")
                 print(f"Pre-computed nuclei labels found for {filename}")
                 # Remove labels touching ROI edge (in place for nuclei predictions generated before "remove_labels_touchin_roi_edge" was implemented)
                 print("Removing nuclei labels touching ROI edge")
