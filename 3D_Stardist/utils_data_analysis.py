@@ -138,7 +138,7 @@ def plot_perc_pop_per_filename_roi(df, model_name, segmentation_type):
 def include_missing_pops(csv_path):
 
     """Scans results .csv for rows missing information for a particular population. meaning it was not detected during Object Classification
-    Fill the missing rows with 0s both in 'marker+_cells' and '%_marker+_cells'""""
+    Fill the missing rows with 0s both in 'marker+_cells' and '%_marker+_cells' """
 
     # Load the CSV file from disk
     df = pd.read_csv(csv_path)
