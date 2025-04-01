@@ -134,3 +134,61 @@ def plot_perc_pop_per_filename_roi(df, model_name, segmentation_type):
                 legend_title="ROI"
             )
             fig.show()
+
+def include_missing_pops(csv_path):
+
+    """Scans results .csv for rows missing information for a particular population. meaning it was not detected during Object Classification
+    Fill the missing rows with 0s both in 'marker+_cells' and '%_marker+_cells'""""
+
+    # Load the CSV file from disk
+    df = pd.read_csv(csv_path)
+
+    # 1. Get all unique population values
+    unique_populations = sorted(df["population"].unique())
+
+    # 2. Create a lookup for marker and marker_location for each population.
+    pop_info = df.drop_duplicates("population").set_index("population")[["marker", "marker_location"]].to_dict("index")
+
+    # 3. Group the data by 'filename' and 'ROI'
+    group_keys = ["filename", "ROI"]
+    updated_groups = []
+
+    for (filename, roi), group in df.groupby(group_keys):
+        # Assume that within each group, these columns are consistent.
+        common_values = group.iloc[0][["total_cells", "nuclei_ch", "marker_ch", "slicing_factor_xy", "slicing_factor_z"]].to_dict()
+        
+        # Identify which populations are missing in this group.
+        present_populations = set(group["population"])
+        missing_populations = set(unique_populations) - present_populations
+        
+        # Create new rows for each missing population.
+        new_rows = []
+        for pop in missing_populations:
+            new_row = {
+                "filename": filename,
+                "ROI": roi,
+                "population": pop,
+                "marker": pop_info[pop]["marker"],
+                "marker_location": pop_info[pop]["marker_location"],
+                "total_cells": common_values["total_cells"],
+                "marker+_cells": 0,
+                "%_marker+_cells": 0,
+                "nuclei_ch": common_values["nuclei_ch"],
+                "marker_ch": common_values["marker_ch"],
+                "slicing_factor_xy": common_values["slicing_factor_xy"],
+                "slicing_factor_z": common_values["slicing_factor_z"]
+            }
+            new_rows.append(new_row)
+        
+        # Append the new rows to the existing group
+        group_updated = pd.concat([group, pd.DataFrame(new_rows)], ignore_index=True)
+        updated_groups.append(group_updated)
+
+    # 4. Combine all groups back into a single DataFrame.
+    result = pd.concat(updated_groups, ignore_index=True)
+
+    # Sort the DataFrame (for example by filename, ROI, population) for clarity.
+    result = result.sort_values(by=["filename", "ROI", "population"]).reset_index(drop=True)
+
+    # Overwrite the original .csv including the missing populations
+    result.to_csv(csv_path, index=False)
