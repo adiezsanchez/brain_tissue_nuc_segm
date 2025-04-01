@@ -66,6 +66,39 @@ def calculate_perc_pops (results_path, method, min_max_per_marker, cell_populati
     # Define the .csv path for the results
     csv_path = results_path / f"BP_populations_marker_+_per_label_{method}.csv"
 
+    #TODO: Maybe move this code snippet at the end of 003_BP_Object_Classifier.
+    # Ensure all .csv files have the same object class columns.  
+    # If a class is missing (not detected in some files), add the column with False values  
+    # and overwrite the file with the updated structure.
+
+    if method == "obj_class":
+        # Read all CSVs to determine the full set of object class columns
+        all_columns = set()
+
+        for csv in per_label_csvs:
+            df = pd.read_csv(csv, index_col=0)
+            all_columns.update(df.columns)
+
+        # Define priority columns that should appear first
+        priority = ['filename', 'ROI', 'label']
+
+        # Create a list of the remaining columns sorted alphabetically
+        other_cols = sorted([col for col in all_columns if col not in priority])
+
+        # Combine the priority columns with the sorted other columns
+        final_columns = priority + other_cols 
+
+        for csv in per_label_csvs:
+            df = pd.read_csv(csv, index_col=0)
+            
+            # Reindex to guarantee all columns exist; missing ones get a default False
+            df = df.reindex(columns=final_columns, fill_value=False)
+            # In case the column already exists but has NaN values, fill them with False explicitly
+            df = df.fillna(False).infer_objects(copy=False)
+            
+            # Write back to CSV; use na_rep to represent missing values as 'False'
+            df.to_csv(csv, index=True, na_rep='False')
+
     # List to store DataFrames before concatenating
     dfs_to_concatenate = []
 
