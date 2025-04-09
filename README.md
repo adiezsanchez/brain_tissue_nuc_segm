@@ -13,7 +13,7 @@ Segmentation of nuclear signals in fluorescently stained mouse brain tissue sect
 
     For brain_nuc_stardist:
 
-   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype plotly pyqt nbformat nd2 czifile cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
+   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
 
    <code>mamba activate brain_nuc_stardist</code>
 
