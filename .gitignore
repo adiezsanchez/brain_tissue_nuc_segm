@@ -7,6 +7,7 @@ __pycache__/
 training_data
 raw_data
 results
+Illustrator_files
 
 # Jupyter Notebook
 .ipynb_checkpoints
