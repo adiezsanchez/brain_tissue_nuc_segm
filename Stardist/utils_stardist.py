@@ -23,20 +23,73 @@ def get_gpu_details():
             print(f"Device type: {device.device_type}")
             print(f"GPU model: {device.physical_device_desc}")
 
-def list_images (directory_path):
+def list_images (directory_path, format=None):
 
     # Create an empty list to store all image filepaths within the dataset directory
     images = []
 
-    # Iterate through the .czi and .nd2 files in the directory
-    for file_path in directory_path.glob("*.czi"):
-        images.append(str(file_path))
-        
-    for file_path in directory_path.glob("*.nd2"):
-        images.append(str(file_path))
+    # If manually defined format
+    if format:
+        for file_path in directory_path.glob(f"*.{format}"):
+            images.append(str(file_path))
+
+    else:
+        # Iterate through the .czi and .nd2 files in the directory
+        for file_path in directory_path.glob("*.czi"):
+            images.append(str(file_path))
+            
+        for file_path in directory_path.glob("*.nd2"):
+            images.append(str(file_path))
 
     return images
 
+def check_files(images, directory_path, segmentation_type, model_name, filetype):
+    """Check if ROIs and nuclei predictions are present for all corresponding input raw images"""
+
+    # Extract filenames from raw images list of directories
+    raw_filenames = [Path(image).stem for image in images]
+
+    # Extract the experiment name from the data directory path
+    experiment_id = directory_path.name
+
+    # Construct ROI and nuclei predictions paths from directory_path above
+    roi_path = directory_path / "ROIs"
+    nuclei_preds_path =  directory_path / "nuclei_preds" / segmentation_type / model_name
+
+    # List of subfolder names
+    try:
+        roi_names = [folder.name for folder in roi_path.iterdir() if folder.is_dir()]
+
+    except FileNotFoundError:
+        roi_names = ["full_image"]
+
+    print(f"Dataset: {experiment_id}")
+
+    for roi_name in roi_names:
+
+        # Define subfolder directory based on filetype to check (roi or nuclei_preds)
+        if filetype == 'roi':
+            subfolder_path = roi_path / roi_name
+        elif filetype == 'nuclei_preds':
+            subfolder_path = nuclei_preds_path / roi_name
+
+        # Extract filenames to check against raw_filenames
+        filenames = list_images(subfolder_path, format='tiff')
+        filenames = [Path(image).stem for image in filenames]
+
+        # Convert both lists to sets for efficient comparison
+        raw_set = set(raw_filenames)
+        found_set = set(filenames)
+
+        # Find missing files
+        missing = raw_set - found_set
+
+        if missing:
+            print(f"\nMissing {filetype} files in '{subfolder_path}':")
+            for m in sorted(missing):
+                print(m)
+        else:
+            print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
 def read_image (image, slicing_factor_xy, slicing_factor_z):
     """Read raw image microscope files, apply downsampling if needed and return filename and a numpy array"""
