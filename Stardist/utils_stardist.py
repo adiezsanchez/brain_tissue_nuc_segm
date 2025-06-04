@@ -1,19 +1,20 @@
 from csbdeep.utils import normalize
-from tensorflow.python.client import device_lib
+# from tensorflow.python.client import device_lib
 from pathlib import Path
-import czifile
-import nd2
+from bioio import BioImage # Added bioio
+# import czifile # Replaced by bioio
+# import nd2 # Replaced by bioio
 import tifffile
-import napari
+import napari # napari is used by display_segm_in_napari, which is not tested, but imported by tests
 import numpy as np
 import os
-import pandas as pd
-from skimage import measure
-from scipy.ndimage import binary_erosion
-import pyclesperanto_prototype as cle
+# import pandas as pd
+# from skimage import measure
+# from scipy.ndimage import binary_erosion
+# import pyclesperanto_prototype as cle
 import warnings
 
-cle.select_device("RTX")
+# cle.select_device("RTX")
 
 def get_gpu_details():
     devices = device_lib.list_local_devices()
@@ -91,42 +92,74 @@ def check_files(images, directory_path, segmentation_type, model_name, filetype)
         else:
             print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
-def read_image (image, slicing_factor_xy, slicing_factor_z):
+def read_image (image_path: str, slicing_factor_xy: int, slicing_factor_z: int, dimension_order: str = None):
     """Read raw image microscope files, apply downsampling if needed and return filename and a numpy array"""
     # Read path storing raw image and extract filename
-    file_path = Path(image)
+    file_path = Path(image_path)
     filename = file_path.stem
 
-    # Extract file extension
-    extension = file_path.suffix
+    try:
+        if dimension_order:
+            # Use provided dimension order
+            img = BioImage(file_path,
+                           C=dimension_order.upper().find('C'),
+                           Z=dimension_order.upper().find('Z'),
+                           X=dimension_order.upper().find('X'),
+                           Y=dimension_order.upper().find('Y')).to_numpy()
+        else:
+            # Default to bioio's automatic dimension detection
+            img = BioImage(file_path).to_numpy()
 
-    # Read the image file (either .czi or .nd2)
-    if extension == ".czi":
-        # Stack from .czi (ch, z, x, y)
-        img = czifile.imread(image)
-        # Remove singleton dimensions
         img = img.squeeze()
 
-    elif extension == ".nd2":
-        # Stack from .nd2 (z, ch, x, y)
-        img = nd2.imread(image)
-        # Transpose to output (ch, z, x, y)
-        img = img.transpose(1, 0, 2, 3)
 
-    else:
-        print ("Implement new file reader")
+    except Exception as e:
+        print(f"Error reading image {filename} with bioio: {e}")
+        # Fallback to tifffile for .tif/.tiff as it's commonly used and was already imported
+        if file_path.suffix.lower() in ['.tif', '.tiff']:
+            try:
+                print(f"Attempting to read {filename} with tifffile as fallback.")
+                img = tifffile.imread(file_path) # Use file_path Path object
+                img = img.squeeze() # Remove singleton dimensions
+            except Exception as tif_e:
+                print(f"Error reading image {filename} with tifffile: {tif_e}")
+                raise tif_e # Re-raise the error if tifffile also fails
+        else:
+            raise e # Re-raise the original error if not a TIFF file
 
     print(f"\n\nImage analyzed: {filename}")
     print(f"Original Array shape: {img.shape}")
 
     # Apply slicing trick to reduce image size (xy resolution)
-    try:
-        img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
-    except IndexError as e:
-        print(f"Slicing Error: {e}")
-        print(f"Slicing parameters: Slicing_XY:{slicing_factor_xy} Slicing_Z:{slicing_factor_z} ")
+    if img.ndim == 4:
+        channel_dim_size = min(img.shape[0], img.shape[1])
+        if channel_dim_size == img.shape[0] and channel_dim_size < 5 :
+             img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
+        elif channel_dim_size == img.shape[1] and channel_dim_size < 5:
+             img = img[::slicing_factor_z, :, ::slicing_factor_xy, ::slicing_factor_xy]
+        else:
+            print(f"Warning: Ambiguous 4D shape {img.shape} for slicing. Assuming C is the first dimension if smaller, else Z.")
+            if img.shape[0] <= img.shape[1] :
+                img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
+            else:
+                img = img[::slicing_factor_z, :, ::slicing_factor_xy, ::slicing_factor_xy]
 
-    # Feedback for researcher
+    elif img.ndim == 3:
+        img = img[::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
+    elif img.ndim == 2:
+        img = img[::slicing_factor_xy, ::slicing_factor_xy]
+    else:
+        print(f"Warning: Slicing logic might not be correctly applied for image shape {img.shape}. Review dimension order.")
+        try:
+            if img.ndim > 2 and slicing_factor_z > 1:
+                 img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
+            elif img.ndim >=2 :
+                 img = img[::slicing_factor_xy, ::slicing_factor_xy]
+        except IndexError as e:
+            print(f"Slicing Error: {e}. Slicing parameters: XY:{slicing_factor_xy}, Z:{slicing_factor_z}. Image shape {img.shape}")
+            print("Consider providing dimension_order or checking slicing parameters.")
+
+
     print(f"Compressed Array shape: {img.shape}")
 
     return img, filename
@@ -189,12 +222,37 @@ def get_stardist_model(segmentation_type, name, basedir='stardist_models'):
 def segment_nuclei(nuclei_img, segmentation_type, model, n_tiles=None):
 
     if segmentation_type == "2D":
-        # Ignore the z-dimension of the n_tiles tuple (x, y, z)
-        n_tiles = n_tiles[-2:]
+        # Ignore the z-dimension of the n_tiles tuple (x, y, z) if it's a 3-tuple
+        if n_tiles is not None and len(n_tiles) == 3:
+            n_tiles_pred = n_tiles[-2:]
+        else:
+            n_tiles_pred = n_tiles
+    else: # 3D
+        n_tiles_pred = n_tiles
     
-    normalized = normalize(nuclei_img)
+    normalized = normalize(nuclei_img) # Requires csbdeep.utils.normalize
 
-    nuclei_labels, _ = model.predict_instances(normalized, n_tiles=n_tiles, show_tile_progress=True)
+    try:
+        print(f"Attempting model.predict_instances with n_tiles={n_tiles_pred}")
+        nuclei_labels, _ = model.predict_instances(normalized, n_tiles=n_tiles_pred, show_tile_progress=True)
+    except Exception as e:
+        print(f"Warning: model.predict_instances failed with error: {e}. Falling back to predict_instances_big.")
+        try:
+            axes = 'ZYX' if normalized.ndim == 3 else 'YX'
+            # Adjust axes for edge cases if necessary
+            if normalized.ndim == 2 and segmentation_type == "3D":
+                axes = 'ZYX'
+                print(f"Warning: 2D image provided to 3D segment_nuclei, axes set to {axes} for predict_instances_big")
+            elif normalized.ndim == 3 and segmentation_type == "2D":
+                 axes = 'ZYX'
+                 print(f"Warning: 3D image provided to 2D segment_nuclei, axes set to {axes} for predict_instances_big")
+
+            nuclei_labels, _ = model.predict_instances_big(normalized, axes=axes,
+                                                           n_tiles=n_tiles_pred,
+                                                           show_tile_progress=True)
+        except Exception as e_big:
+            print(f"Error: model.predict_instances_big also failed with error: {e_big}")
+            raise e_big
 
     return nuclei_labels
 
@@ -653,7 +711,9 @@ def display_segm_in_napari(directory_path, segmentation_type, model_name, index,
         if filename in image:
 
             # Generate maximum intensity projection and extract filename
-            img, filename = read_image(image, (slicing_factor_xy * compression_factor), (slicing_factor_z))
+            img, filename = read_image(image_path=image,
+                                       slicing_factor_xy=(slicing_factor_xy * compression_factor),
+                                       slicing_factor_z=slicing_factor_z)
 
             # Show input image in Napari (2D or 3D-stack)
             viewer = napari.Viewer(ndisplay=2)
