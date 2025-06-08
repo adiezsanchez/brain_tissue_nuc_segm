@@ -92,7 +92,10 @@ def check_files(images, directory_path, segmentation_type, model_name, filetype)
             print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
 def read_image (image, slicing_factor_xy, slicing_factor_z):
-    """Read raw image microscope files, apply downsampling if needed and return filename and a numpy array"""
+    """Read raw image microscope files (.nd2 and .czi), apply downsampling if needed and return filename and a numpy array
+    Originally intended to read multichannel 3D-stack images (ch, z, x, y), if input image is a multichannel
+    2D-image the function generates a fake stack of shape (ch, 2, x, y) where both z-slices contain the same
+    information. This would be transformed to the original input 2D-image when segmentation_type = '2D' """
     # Read path storing raw image and extract filename
     file_path = Path(image)
     filename = file_path.stem
@@ -102,17 +105,31 @@ def read_image (image, slicing_factor_xy, slicing_factor_z):
 
     # Read the image file (either .czi or .nd2)
     if extension == ".czi":
-        # Stack from .czi (ch, z, x, y)
+        # Read stack from .czi (ch, z, x, y) or (ch, x, y)
         img = czifile.imread(image)
         # Remove singleton dimensions
         img = img.squeeze()
+        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
+        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
+        # I know inefficient, but do not want to change all the downstream code
+        if len(img.shape) < 4:
+            # Build a (ch, 2, x, y) stack
+            img = np.stack([img, img], axis=1)
 
     elif extension == ".nd2":
-        # Stack from .nd2 (z, ch, x, y)
+        # Read stack from .nd2 (z, ch, x, y) or (ch, x, y)
         img = nd2.imread(image)
-        # Transpose to output (ch, z, x, y)
-        img = img.transpose(1, 0, 2, 3)
-
+        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
+        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
+        # I know inefficient, but do not want to change all the downstream code
+        if len(img.shape) < 4:
+            # Build a (ch, 2, x, y) stack
+            img = np.stack([img, img], axis=1)
+        # This is the case of a multichannel 3D-stack (z, ch, x, y)
+        else:
+            # Transpose to output (ch, z, x, y)
+            img = img.transpose(1, 0, 2, 3)
+        
     else:
         print ("Implement new file reader")
 
