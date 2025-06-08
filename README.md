@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
 
-This repository provides tools in the form of interactive **Jupyter Notebooks** to define cell populations based on the presence or absence of multiple fluorescent markers in multichannel 3D-stacks. The pipeline has been designed to be used with brain and organoid tissue sections but can also work for cell cultures. Analysis can be performed on the whole image by default or on multiple user-defined ROIs. 
+This repository provides tools in the form of interactive **Jupyter Notebooks** to define cell populations based on the presence or absence of multiple fluorescent markers in multichannel 3D-stacks or 2D-images. The pipeline has been designed to be used with brain and organoid tissue sections but can also work for cell cultures. Analysis can be performed on the whole image by default or on multiple user-defined ROIs. 
 
 ## Overview
 
@@ -16,7 +16,7 @@ These compartments are used to check for the **presence of fluorescent markers**
 
 ## Methods for Defining Positive Cells
 
-After segmentation, one of the following **three methods** can be used to determine whether a cell is positive for a marker. Each method has a SP (single-processing) and BP (batch-processing) mode. SP mode allows to explore different images in your dataset, apply the defining method and visualize the results in Napari in order to define your BP settings. BP mode applies the settings defined in SP mode to all images in a folder with no visual feedback in Napari.
+After segmentation, one of the following **three methods** can be used to determine whether a cell is positive for a marker. Each method has a SP (single-processing) and BP (batch-processing) mode. SP mode allows to explore different images in your dataset, apply the defining method and visualize the results in Napari in order to define your BP settings. BP mode applies the settings defined in SP mode to all images in a folder with no visual feedback in Napari. You can perform a QC check of the BP mode using **`005_Napari_segm_viz.ipynb`** after the run is complete. 
 
 ### 1. Average Intensity Measurement with Min-Max Thresholding 
 
@@ -47,8 +47,8 @@ Once positive cells are identified:
 
 ## Input & File Formats
 
-- Accepts **multichannel 3D stacks** (multiple z-slices) from **Nikon (.nd2)** and **Zeiss (.czi)** systems.
-- Analysis can be performed on the **3D volume** or a **2D maximum intensity projection**.
+- Accepts **multichannel 3D stacks** (multiple z-slices) and **multichannel 2D images** (single z-plane) from **Nikon (.nd2)** and **Zeiss (.czi)** systems.
+- Analysis can be performed on the **3D volume**, a **2D maximum intensity projection** of the original 3D volume (to speed computations) or on the **original 2D image input**.
 - To support additional file formats, modify the `read_image()` function in  **`utils_stardist.py`** to return a **NumPy array** with shape `(ch, z, x, y)`.
 
 
