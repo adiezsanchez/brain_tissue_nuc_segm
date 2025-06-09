@@ -3,7 +3,15 @@
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
 
-This repository provides tools in the form of interactive **Jupyter Notebooks** to define cell populations based on the presence or absence of multiple fluorescent markers in multichannel 3D-stacks or 2D-images. The pipeline has been designed to be used with brain and organoid tissue sections but can also work for cell cultures. Analysis can be performed on the whole image by default or on multiple user-defined ROIs. 
+This repository provides tools in the form of interactive **Jupyter Notebooks** to define cell populations based on the presence or absence of multiple fluorescent markers in multichannel 3D-stacks or 2D-images. The pipeline has been designed to be used with brain and organoid tissue sections but can also work for cell cultures. Analysis can be performed on the whole image by default or on multiple user-defined ROIs.
+
+## What can this pipeline do for me?
+
+Click on the thumbnail below to watch an introductory showcase and an explanation of the 3 methods available to define marker positive cells.
+
+<a href="https://www.youtube.com/watch?v=LwmiMrMs-_c">
+  <img src="https://img.youtube.com/vi/LwmiMrMs-_c/hqdefault.jpg" width="600" height="300">
+</a>
 
 ## Overview
 
