@@ -9,9 +9,7 @@ This repository provides tools in the form of interactive **Jupyter Notebooks** 
 
 Click on the thumbnail below to watch an introductory showcase and an explanation of the 3 methods available to define marker positive cells.
 
-<a href="https://www.youtube.com/watch?v=LwmiMrMs-_c">
-  <img src="https://img.youtube.com/vi/LwmiMrMs-_c/hqdefault.jpg" width="600" height="300">
-</a>
+[![Watch the video](https://img.youtube.com/vi/LwmiMrMs-_c/hqdefault.jpg)](https://www.youtube.com/watch?v=LwmiMrMs-_c)
 
 ## Overview
 
