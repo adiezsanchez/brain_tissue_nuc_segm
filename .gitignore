@@ -12,13 +12,4 @@ Illustrator_files
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
 3D_Stardist/nihanseb_dev.ipynb
