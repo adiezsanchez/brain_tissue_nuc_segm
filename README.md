@@ -77,7 +77,7 @@ Once positive cells are identified:
 
     For brain_nuc_stardist:
 
-   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
+   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile ipykernel ipython cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
 
    <code>mamba activate brain_nuc_stardist</code>
 
@@ -98,7 +98,7 @@ Once positive cells are identified:
 
    For brain_nuc_cellpose:
 
-   <code>mamba create -n brain_nuc_cellpose python=3.11 devbio-napari cellpose=3.0.11 pytorch==2.5.0 torchvision==0.20.0 pytorch-cuda=12.1 plotly pyqt python-kaleido nd2 -c conda-forge -c pytorch -c nvidia</code>
+   <code>mamba create -n brain_nuc_cellpose python=3.11 devbio-napari cellpose=3.0.11 pytorch==2.5.0 torchvision==0.20.0 pytorch-cuda=12.1 plotly pyqt python-kaleido nd2 czifile ipykernel ipython -c conda-forge -c pytorch -c nvidia</code>
 
 3. To recreate the venvs from the files stored in the env folder (recommended) navigate into the env folder using <code>cd</code> in your console and then execute:
 
