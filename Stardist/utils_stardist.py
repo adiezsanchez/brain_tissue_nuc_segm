@@ -1,8 +1,9 @@
 from csbdeep.utils import normalize
 from tensorflow.python.client import device_lib
 from pathlib import Path
-import czifile
-import nd2
+from skimage.color import separate_stains, hed_from_rgb
+import openslide
+import gc
 import tifffile
 import napari
 import numpy as np
@@ -92,61 +93,44 @@ def check_files(images, directory_path, segmentation_type, model_name, filetype)
             print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
 def read_image (image, slicing_factor_xy, slicing_factor_z):
-    """Read raw image microscope files (.nd2 and .czi), apply downsampling if needed and return filename and a numpy array
-    Originally intended to read multichannel 3D-stack images (ch, z, x, y), if input image is a multichannel
-    2D-image the function generates a fake stack of shape (ch, 2, x, y) where both z-slices contain the same
-    information. This would be transformed to the original input 2D-image when segmentation_type = '2D' """
+    """Quick adapt to read ndpi files """
     # Read path storing raw image and extract filename
     file_path = Path(image)
     filename = file_path.stem
 
-    # Extract file extension
-    extension = file_path.suffix
+    slide = openslide.OpenSlide(image)
 
-    # Read the image file (either .czi or .nd2)
-    if extension == ".czi":
-        # Read stack from .czi (ch, z, x, y) or (ch, x, y)
-        img = czifile.imread(image)
-        # Remove singleton dimensions
-        img = img.squeeze()
-        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
-        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
-        # I know inefficient, but do not want to change all the downstream code
-        if len(img.shape) < 4:
-            # Build a (ch, 2, x, y) stack
-            img = np.stack([img, img], axis=1)
+    # Get level 0 dimensions (highest resolution)
+    # width, height = slide.dimensions
 
-    elif extension == ".nd2":
-        # Read stack from .nd2 (z, ch, x, y) or (ch, x, y)
-        img = nd2.imread(image)
-        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
-        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
-        # I know inefficient, but do not want to change all the downstream code
-        if len(img.shape) < 4:
-            # Build a (ch, 2, x, y) stack
-            img = np.stack([img, img], axis=1)
-        # This is the case of a multichannel 3D-stack (z, ch, x, y)
-        else:
-            # Transpose to output (ch, z, x, y)
-            img = img.transpose(1, 0, 2, 3)
-        
-    else:
-        print ("Implement new file reader")
+    # Optionally, you can select a lower resolution level for faster loading
+    level = 1  # for example
+    width, height = slide.level_dimensions[level]
 
-    print(f"\n\nImage analyzed: {filename}")
-    print(f"Original Array shape: {img.shape}")
+    # Read region from level 0 (top-left corner, full size)
+    # The region is returned as a PIL Image
+    region = slide.read_region(location=(0, 0), level=1, size=(width, height))
 
-    # Apply slicing trick to reduce image size (xy resolution)
-    try:
-        img = img[:, ::slicing_factor_z, ::slicing_factor_xy, ::slicing_factor_xy]
-    except IndexError as e:
-        print(f"Slicing Error: {e}")
-        print(f"Slicing parameters: Slicing_XY:{slicing_factor_xy} Slicing_Z:{slicing_factor_z} ")
+    # Remove slide variable
+    del slide
+    gc.collect()
 
-    # Feedback for researcher
-    print(f"Compressed Array shape: {img.shape}")
+    # Convert to RGB (removes alpha channel) and then to NumPy array
+    region_rgb = region.convert("RGB")
+    image_np = np.array(region_rgb)
 
-    return img, filename
+    # Perform color deconvolution
+    deconvolved = separate_stains(image_np, hed_from_rgb)
+
+    # Change from float64 to uint8 (0, 255)
+    # Normalize to [0, 1] using the actual max, then scale
+    deconvolved = deconvolved / deconvolved.max()
+    deconvolved = (deconvolved * 255).astype(np.uint8)
+
+    # Change array order
+    deconvolved = deconvolved.transpose(2, 0, 1)
+
+    return deconvolved, filename
 
 def maximum_intensity_projection (img):
 
@@ -157,8 +141,8 @@ def maximum_intensity_projection (img):
 
 def extract_nuclei_stack (img, nuclei_channel):
 
-    # Extract nuclei stack from a multichannel z-stack (ch, z, x, y)
-    nuclei_img = img[nuclei_channel, :, :, :]
+    # Extract nuclei stack from a multichannel 2D-image (ch, z, x, y)
+    nuclei_img = img[nuclei_channel, :, :]
 
     return nuclei_img
 
