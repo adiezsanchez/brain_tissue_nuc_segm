@@ -12,4 +12,6 @@ Illustrator_files
 # Jupyter Notebook
 .ipynb_checkpoints
 
-3D_Stardist/nihanseb_dev.ipynb
+# pixi environments
+.pixi/*
+!.pixi/config.toml
