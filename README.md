@@ -71,6 +71,10 @@ Once positive cells are identified:
 
 <h2>Environment setup instructions</h2>
 
+<img src="./assets/pixi_banner.svg">
+
+<img src="./assets/mamba_banner.png">
+
 1. In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments using Mamba. See instructions [here](https://biapol.github.io/blog/mara_lampert/getting_started_with_mambaforge_and_python/readme.html).
 
 2. Then you will need to create a couple of virtual environment using the command below or from the .yaml (and requirements.txt) file in the env folder (see step 3):
@@ -94,11 +98,6 @@ Once positive cells are identified:
    <code>pip install numpy==1.26.4</code>
 
    <code>pip install numba==0.59.1</code>
-
-
-   For brain_nuc_cellpose:
-
-   <code>mamba create -n brain_nuc_cellpose python=3.11 devbio-napari cellpose=3.0.11 pytorch==2.5.0 torchvision==0.20.0 pytorch-cuda=12.1 plotly pyqt python-kaleido nd2 czifile ipykernel ipython -c conda-forge -c pytorch -c nvidia</code>
 
 3. To recreate the venvs from the files stored in the env folder (recommended) navigate into the env folder using <code>cd</code> in your console and then execute:
 
