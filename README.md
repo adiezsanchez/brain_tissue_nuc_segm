@@ -3,7 +3,9 @@
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
 
-This repository provides tools in the form of interactive **Jupyter Notebooks** to define cell populations based on the presence or absence of multiple fluorescent markers in multichannel 3D-stacks or 2D-images. The pipeline has been designed to be used with brain and organoid tissue sections but also works for cell cultures. Analysis can be performed on the whole image by default or on multiple user-defined ROIs. It also allows you to extract average marker intensity signal from nucleus and cytoplasm to easily calculate nuclear translocation ratios.
+This repository provides tools in the form of interactive **Jupyter Notebooks** to define **cell populations** based on the presence or absence of **multiple fluorescent markers** in **multichannel 3D-stacks or 2D-images**. 
+
+Analysis can be performed on the **whole image** (default) or on **multiple user-defined ROIs**. It also allows you to extract average marker intensity signal from nucleus and cytoplasm to easily calculate nuclear translocation ratios.
 
 <img src="./assets/neuroseg_banner.png">
 
@@ -21,6 +23,30 @@ Watch the video series below to learn how to set up the required tools, explore 
 | <img src="https://img.youtube.com/vi/VIDEO_ID_4/0.jpg" width="720"> | [Step 3.2 - Defining Marker Positive Cells - Pixel Intensity](https://www.youtube.com/watch?v=VIDEO_ID_4) | Method 2: Useful method to remove bright unspecific spots that cause false positive marker cells. Based on colocalization and morphological operations. Choose **`000_SP_Colocalization.ipynb`** & **`003_BP_Colocalization.ipynb`**. |
 | <img src="https://img.youtube.com/vi/VIDEO_ID_4/0.jpg" width="720"> | [Step 3.3 - Defining Marker Positive Cells - APOC Object Classifier](https://www.youtube.com/watch?v=VIDEO_ID_4) | Method 3: Train an **object classifier** using **signal intensity features** by painting on top of a few sample objects in **Napari** using **`!_APOC_Obj_Class_training.ipynb`**. After training the object classifier run **`000_SP_Object_Classifier.ipynb`** & **`003_BP_Object_Classifier.ipynb`**. |
 | <img src="https://img.youtube.com/vi/VIDEO_ID_5/0.jpg" width="720"> | [Steps 4 & 5 - Data Analysis and QC Visualization](https://www.youtube.com/watch?v=VIDEO_ID_5) | Define subpopulations based on **presence/absence of single or multiple markers** using **`004_BP_Data_analysis.ipynb`** and visualize segmentation results and subpopulations in **Napari** using  **`005_Napari_segm_viz.ipynb`** |
+
+<h2>How to install this tool? (Environment setup)</h2>
+
+In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments, IDEs and Git. If you are not familiar with those concepts worry not. Watch the [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) video, it will guide you through the necessary steps and cover all basic concepts.
+
+Once you have your developer stack ready you can simply clone this repository using:
+
+<code>git clone https://github.com/adiezsanchez/brain_tissue_nuc_segm</code>
+
+Then proceed to the next step either using **Mamba** or **Pixi** as your environment manager of choice. This environment has been created using Windows as the platform of choice, if you need to recreate the environment for other platforms scroll to the bottom of the README.md to see the install route I followed:
+
+<img src="./assets/mamba_banner.png">
+
+Type the following command after cloning the Github repo (cd will get you inside the local repository folder and mamba will create the virtual environment):
+
+<code>cd brain_tissue_nuc_segm && mamba env create -f environment.yml</code>
+
+<img src="./assets/pixi_banner.svg">
+
+If you want to use the latest in environment managers I do recommend switching to Pixi, it will pay off in the short term. Type the following command and enjoy the fastest venv manager in the market:
+
+<code>cd brain_tissue_nuc_segm && pixi install</code>
+
+Finally, launch VS Code (or your IDE of choice) to interact with the analysis pipelines.
 
 ## Overview
 
@@ -68,53 +94,6 @@ Once positive cells are identified:
 - Analysis can be performed on the **3D volume**, a **2D maximum intensity projection** of the original 3D volume (to speed computations) or on the **original 2D image input**.
 - To support additional file formats, modify the `read_image()` function in  **`utils_stardist.py`** to return a **NumPy array** with shape `(ch, z, x, y)`.
 
-
-<h2>Environment setup instructions</h2>
-
-<img src="./assets/pixi_banner.svg">
-
-<img src="./assets/mamba_banner.png">
-
-1. In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments using Mamba. See instructions [here](https://biapol.github.io/blog/mara_lampert/getting_started_with_mambaforge_and_python/readme.html).
-
-2. Then you will need to create a couple of virtual environment using the command below or from the .yaml (and requirements.txt) file in the env folder (see step 3):
-
-    For brain_nuc_stardist:
-
-   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile ipykernel ipython cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
-
-   <code>mamba activate brain_nuc_stardist</code>
-
-   <code>pip install "tensorflow<2.11"</code>
-
-   <code>pip install stardist==0.8.5</code>
-
-   <code>pip install gputools==0.2.15</code>
-
-   <code>pip install edt</code>
-
-   <code>pip install reikna==0.8.0</code>
-
-   <code>pip install numpy==1.26.4</code>
-
-   <code>pip install numba==0.59.1</code>
-
-3. To recreate the venvs from the files stored in the env folder (recommended) navigate into the env folder using <code>cd</code> in your console and then execute:
-
-   <code># Using full YAML file with all packages (including pip)</code>
-
-   <code>mamba env create -f stardist_environment.full.yaml</code>
-
-   <code># OR: base conda + pip requirements</code>
-
-   <code>mamba env create -f stardist_environment.base.yaml</code>
-
-   <code>mamba activate brain_nuc_stardist</code>
-
-   <code>pip install -r stardist_requirements.txt</code>
-
-4. Then launch VS Code to interact with the analysis pipelines.
-
 <h2>Pretrained Stardist Models</h2>
 
 This repository contains a few pretrained models applied by users at NTNU. You can also train your own after annotating a 2D or 3D subset of your dataset (then use the JN under <code>Stardist/Stardist_model_training</code>). For annotation instructions see the [Stardist repository](https://github.com/stardist/stardist). Pre-trained models with an sf_ suffix have been trained using downsampled input data in x and y, i.e. sf_None is trained using the full resolution images but sf_2 and sf_4 are downsampled by a factor if 2 and 4 respectively. This allows quicker nuclei label predictions in high resolution images. MEC 0.1 is the default model applied to the test_data you can obtain by [contacting me](mailto:alberto.d.sanchez@ntnu.no).
@@ -133,4 +112,26 @@ Trained on images of human iPSC-derived brain organoid 18 µm sections. Images a
 
 <h4>3D_brain_Nikon_dagnysd_0.5</h4>
 
-Trained on images of mouse hippocampi from 30 µm tissue sections. Images acquired on a Nikon Ti2 Crestoptics V3 spinning disk using a PLAN APO λD 40x OFN25 DIC N2 air objective. Scaling per Pixel (x, y, z): 0.166µm x 0.166µm x 0.5µm. For detailed acquisition metadata see <code>training_data/thick_brain_Nikon_dagnysd_0.5/A2_Brain4_C_TR1_ROI_1.nd2</code>. Stardist3D model meant to be used with an image stack (multiple z-slices). 
+Trained on images of mouse hippocampi from 30 µm tissue sections. Images acquired on a Nikon Ti2 Crestoptics V3 spinning disk using a PLAN APO λD 40x OFN25 DIC N2 air objective. Scaling per Pixel (x, y, z): 0.166µm x 0.166µm x 0.5µm. For detailed acquisition metadata see <code>training_data/thick_brain_Nikon_dagnysd_0.5/A2_Brain4_C_TR1_ROI_1.nd2</code>. Stardist3D model meant to be used with an image stack (multiple z-slices).
+
+<h2>Original mamba + pip install command</h2>
+
+Needed some manual downgrades to make Stardist NMS step leverage Multithreading in CPU operations. See this [image.sc thread](https://forum.image.sc/t/difficulty-installing-stardist-tensorflow-gputools-with-anaconda/104305/15) for more info
+
+   <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile ipykernel ipython cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
+
+   <code>mamba activate brain_nuc_stardist</code>
+
+   <code>pip install "tensorflow<2.11"</code>
+
+   <code>pip install stardist==0.8.5</code>
+
+   <code>pip install gputools==0.2.15</code>
+
+   <code>pip install edt</code>
+
+   <code>pip install reikna==0.8.0</code>
+
+   <code>pip install numpy==1.26.4</code>
+
+   <code>pip install numba==0.59.1</code>
