@@ -30,7 +30,7 @@ def list_images (directory_path, format=None):
 
     # If manually defined format
     if format:
-        for file_path in directory_path.glob(f"*.{format}"):
+        for file_path in directory_path.glob(f"*{format}"):
             images.append(str(file_path))
 
     else:
@@ -109,6 +109,16 @@ def read_image (image, slicing_factor_xy, slicing_factor_z):
         img = czifile.imread(image)
         # Remove singleton dimensions
         img = img.squeeze()
+        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
+        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
+        # I know inefficient, but do not want to change all the downstream code
+        if len(img.shape) < 4:
+            # Build a (ch, 2, x, y) stack
+            img = np.stack([img, img], axis=1)
+
+    elif extension == ".tif" or extension == ".tiff":
+        # Read stack from .tiff or .tif (ch, z, x, y) or (ch, x, y)
+        img = tifffile.imread(image)
         # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
         # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
         # I know inefficient, but do not want to change all the downstream code
