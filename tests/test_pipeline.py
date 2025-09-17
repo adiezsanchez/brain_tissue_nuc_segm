@@ -50,9 +50,6 @@ model_name = "MEC0.1" # Type "test" if you don't have a custom model trained
 # Model loading 
 model = get_stardist_model(segmentation_type, name=model_name, basedir='./Stardist/stardist_models')
 
-# Check if (all) ROIs are present before starting the nuclei prediction
-check_files(images, directory_path, segmentation_type, model_name, filetype='roi')
-
 # Initialize napari viewer
 viewer = napari.Viewer(ndisplay=3)
 
