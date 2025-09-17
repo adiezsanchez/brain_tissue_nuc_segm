@@ -51,7 +51,7 @@ model_name = "MEC0.1" # Type "test" if you don't have a custom model trained
 model = get_stardist_model(segmentation_type, name=model_name, basedir='./Stardist/stardist_models')
 
 # Initialize napari viewer
-viewer = napari.Viewer(ndisplay=3)
+viewer = napari.Viewer(ndisplay=2)
 
 # List of subfolder names
 try:
