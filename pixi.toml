@@ -6,6 +6,7 @@ version = "0.1.0"
 platforms = ["linux-64", "win-64"]  # removed osx-arm64
 
 [tasks]
+lab = "jupyter lab"
 test = "python -m tests.test_pipeline"
 
 [dependencies]
@@ -15,6 +16,7 @@ czifile = "*"
 edt = "*"
 ipykernel = "*"
 ipython = "*"
+jupyterlab = "*"
 napari = "*"
 nbformat = "*"
 nd2 = "*"
