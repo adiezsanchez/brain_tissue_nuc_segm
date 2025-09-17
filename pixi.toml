@@ -3,7 +3,7 @@ authors = ["adiezsanchez <adiez.biotech@gmail.com>"]
 channels = ["conda-forge", "pytorch", "nvidia"]
 name = "brain_nuc_stardist"
 version = "0.1.0"
-platforms = ["linux-64", "osx-64", "win-64"]
+platforms = ["linux-64", "win-64"]  # removed osx-arm64
 
 [tasks]
 test = "python tests/test_pipeline.py"
@@ -21,40 +21,34 @@ nd2 = "*"
 plotly = "*"
 pyclesperanto-prototype = "*"
 pyqt = "*"
-python = "3.10"
+python = "==3.10"
 stardist = "==0.8.5"
 
-# Pinned versions for reproducibility
+# pinned for reproducibility
 numba = "==0.59.1"
 numpy = "==1.26.4"
 reikna = "==0.8.0"
-gputools = "==0.2.15"
 
 # -------------------------
 # Platform-specific deps
 # -------------------------
 
 [target.win-64.dependencies]
-cudatoolkit = "11.2"
-cudnn = "8.1.0"
+cudatoolkit = "==11.2"
+cudnn = "8.1.*"
 
 [target.linux-64.dependencies]
-cudatoolkit = "11.2"
-cudnn = "8.1.0"
-
-# macOS: no CUDA, use CPU TF by default
-[target.osx-64.dependencies]
-# nothing extra here
+cudatoolkit = "==11.8"       # newer CUDA
+cudnn = "8.9.*"              # newer cuDNN
 
 # -------------------------
 # PyPI deps
 # -------------------------
 
-[pypi-dependencies]
-# Default: works on Linux/Win and CPU macOS
-tensorflow = "==2.10.1"
+[target.win-64.pypi-dependencies]
+tensorflow = "==2.10.1"      # compatible with CUDA 11.2
 
-[target.osx-64.pypi-dependencies]
-# Prefer Apple builds if available
-tensorflow-macos = "*"
-tensorflow-metal = "*"
+[target.linux-64.pypi-dependencies]
+tensorflow = "==2.18.0"      # compatible with CUDA 12.1
+
+
