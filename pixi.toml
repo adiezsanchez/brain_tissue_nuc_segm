@@ -3,7 +3,7 @@ authors = ["adiezsanchez <adiez.biotech@gmail.com>"]
 channels = ["conda-forge", "pytorch", "nvidia"]
 name = "brain_nuc_stardist"
 version = "0.1.0"
-platforms = ["linux-64", "win-64"]  # removed osx-arm64
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tasks]
 lab = "jupyter lab"
@@ -11,7 +11,6 @@ test = "python -m tests.test_pipeline"
 
 [dependencies]
 apoc-backend = "*"
-csbdeep = "==0.8.1"
 czifile = "*"
 edt = "*"
 ipykernel = "*"
@@ -24,12 +23,15 @@ plotly = "*"
 pyclesperanto-prototype = "*"
 pyqt = "*"
 python = "==3.10"
-stardist = "==0.8.5"
 
 # pinned for reproducibility
 numba = "==0.59.1"
 numpy = "==1.26.4"
 reikna = "==0.8.0"
+
+# Default versions 
+csbdeep = "==0.8.1"
+stardist = "==0.8.5"
 
 # -------------------------
 # Platform-specific deps
@@ -43,6 +45,9 @@ cudnn = "8.1.*"
 cudatoolkit = "==11.8"       # newer CUDA
 cudnn = "8.9.*"              # newer cuDNN
 
+[target.osx-arm64.dependencies]
+stardist = "==0.9.1"
+
 # -------------------------
 # PyPI deps
 # -------------------------
@@ -53,4 +58,6 @@ tensorflow = "==2.10.1"      # compatible with CUDA 11.2
 [target.linux-64.pypi-dependencies]
 tensorflow = "==2.18.0"      # compatible with CUDA 12.1
 
-
+[target.osx-arm64.pypi-dependencies]
+tensorflow-macos = "==2.15.1"  
+tensorflow-metal = "==1.2.0"       # enables GPU acceleration
