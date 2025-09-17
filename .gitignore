@@ -8,6 +8,7 @@ training_data
 raw_data
 results
 Illustrator_files
+assets/pixi_test_data/nuclei_preds
 
 # Jupyter Notebook
 .ipynb_checkpoints
