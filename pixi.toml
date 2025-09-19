@@ -12,7 +12,6 @@ test = "python -m tests.test_pipeline"
 [dependencies]
 apoc-backend = "*"
 czifile = "*"
-csbdeep = "==0.8.1"
 edt = "*"
 ipykernel = "*"
 ipython = "*"
@@ -33,17 +32,14 @@ python = "==3.10"
 cudatoolkit = "==11.2"
 cudnn = "8.1.*"
 stardist = "==0.8.5"
+csbdeep = "==0.8.1"
 numba = "==0.59.1"
 numpy = "==1.26.4"
 reikna = "==0.8.0"
 
-[target.linux-64.dependencies]
-cudatoolkit = "==11.8"       # newer CUDA
-cudnn = "8.9.*"              # newer cuDNN
-stardist = "==0.9.1"
-
 [target.osx-arm64.dependencies]
 stardist = "==0.9.1"
+csbdeep = "*"
 
 # -------------------------
 # PyPI deps
@@ -54,6 +50,8 @@ tensorflow = "==2.10.1"      # compatible with CUDA 11.2
 
 [target.linux-64.pypi-dependencies]
 tensorflow = "==2.18.0"      # compatible with CUDA 12.1
+stardist = "==0.8.5"
+csbdeep = "==0.8.1"
 
 [target.osx-arm64.pypi-dependencies]
 tensorflow-macos = "==2.15.1"  
