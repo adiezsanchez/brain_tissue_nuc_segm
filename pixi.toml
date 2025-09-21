@@ -1,58 +1,94 @@
 [workspace]
-authors = ["adiezsanchez <adiez.biotech@gmail.com>"]
-channels = ["conda-forge", "pytorch", "nvidia"]
-name = "brain_nuc_stardist"
-version = "0.1.0"
-platforms = ["linux-64", "win-64", "osx-arm64"]
+authors = ["adiezsanchez <adiez.biotech@gmail.com>"]   # project author metadata
+channels = ["conda-forge", "pytorch", "nvidia"]        # conda channels to search for packages
+name = "brain_nuc_stardist"                            # project name
+version = "0.1.0"                                      # project version
+platforms = ["linux-64", "win-64", "osx-arm64"]        # supported OS/architectures
 
-[tasks]
-lab = "jupyter lab"
-test = "python -m tests.test_pipeline"
+# -------------------------
+# Tasks
+# -------------------------
+
+[tasks.lab]
+cmd = "jupyter lab"                                    # launch Jupyter Lab
+
+[tasks.lab.env]
+LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"  
+# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
+TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
+TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+
+[tasks.test]
+cmd = "python -m tests.test_pipeline"                  # run test suite
+
+[tasks.test.env]
+LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
+TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
+TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+
+[tasks.test_gpu]
+cmd = "python tests/test_gpu.py"                       # check GPU acceleration
+
+[tasks.test_gpu.env]
+LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
+TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
+TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+
+# -------------------------
+# Cross-platform dependencies
+# -------------------------
 
 [dependencies]
-apoc-backend = "*"
-czifile = "*"
-edt = "*"
-ipykernel = "*"
-ipython = "*"
-jupyterlab = "*"
-napari = "*"
-nbformat = "*"
-nd2 = "*"
-plotly = "*"
-pyclesperanto-prototype = "*"
-pyqt = "*"
-python = "==3.10"
+apoc-backend = "*"                                     # fast GPU classifiers (APOC)
+czifile = "*"                                          # read Zeiss CZI images
+edt = "*"                                              # Euclidean distance transforms
+ipykernel = "*"                                        # Jupyter kernel support
+ipython = "*"                                          # interactive shell
+jupyterlab = "*"                                       # Jupyter environment
+napari = "*"                                           # image viewer
+nbformat = "*"                                         # notebook parsing
+nd2 = "*"                                              # Nikon ND2 image reader
+plotly = "*"                                           # plotting library
+pyclesperanto-prototype = "*"                          # GPU image processing (OpenCL)
+pyqt = "*"                                             # GUI backend for napari
+python = "==3.10"                                      # freeze Python version
 
 # -------------------------
 # Platform-specific deps
 # -------------------------
 
 [target.win-64.dependencies]
-cudatoolkit = "==11.2"
-cudnn = "8.1.*"
-stardist = "==0.8.5"
-csbdeep = "==0.8.1"
-numba = "==0.59.1"
+cudatoolkit = "==11.2"                                 # CUDA runtime for Windows
+cudnn = "8.1.*"                                        # cuDNN for Windows
+stardist = "==0.8.5"                                   # StarDist for nuclei segmentation
+csbdeep = "==0.8.1"                                    # CARE backend for StarDist
+numba = "==0.59.1"                                     # required for stardist/CSBDeep
 numpy = "==1.26.4"
-reikna = "==0.8.0"
+reikna = "==0.8.0"                                     # GPU array lib sometimes used
+
+[target.linux-64.dependencies]
+cudatoolkit = "==11.2"                                 # CUDA runtime (Linux env-local)
+cudnn = "8.1.*"                                        # cuDNN (Linux env-local)
 
 [target.osx-arm64.dependencies]
-stardist = "==0.9.1"
-csbdeep = "*"
+stardist = "==0.9.1"                                   # latest compatible with Apple Silicon
+csbdeep = "*"                                          # CARE backend
 
 # -------------------------
-# PyPI deps
+# PyPI deps (per platform)
 # -------------------------
 
 [target.win-64.pypi-dependencies]
-tensorflow = "==2.10.1"      # compatible with CUDA 11.2
+tensorflow = "==2.10.1"                                # last Windows GPU build (CUDA 11.2)
 
 [target.linux-64.pypi-dependencies]
-tensorflow = "==2.18.0"      # compatible with CUDA 12.1
+tensorflow = "==2.10.1"                                # GPU-enabled build for Linux
 stardist = "==0.8.5"
 csbdeep = "==0.8.1"
 
 [target.osx-arm64.pypi-dependencies]
-tensorflow-macos = "==2.15.1"  
-tensorflow-metal = "==1.2.0"       # enables GPU acceleration
+tensorflow-macos = "==2.15.1"                          # Apple Silicon TF
+tensorflow-metal = "==1.2.0"                           # Metal backend (GPU acceleration)
+
