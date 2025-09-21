@@ -13,7 +13,7 @@ from scipy.ndimage import binary_erosion
 import pyclesperanto_prototype as cle
 import warnings
 
-#cle.select_device("RTX")
+cle.select_device("RTX")
 
 def get_gpu_details():
     devices = device_lib.list_local_devices()

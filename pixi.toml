@@ -9,32 +9,32 @@ platforms = ["linux-64", "win-64", "osx-arm64"]        # supported OS/architectu
 # Tasks
 # -------------------------
 
+[tasks]
+fix_opencl = "scripts/fix_opencl.sh"
+
 [tasks.lab]
-cmd = "jupyter lab"                                    # launch Jupyter Lab
+cmd = "jupyter lab"
 
 [tasks.lab.env]
-LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"  
-# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
-TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
-TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+TF_CPP_MIN_LOG_LEVEL = "3"   # suppress TensorFlow info/warnings/errors
+TF_TRT_DISABLE = "1"         # disables TensorRT probing warnings
 
 [tasks.test]
-cmd = "python -m tests.test_pipeline"                  # run test suite
+cmd = "python -m tests.test_pipeline"
 
 [tasks.test.env]
-LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
-# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
-TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
-TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+TF_CPP_MIN_LOG_LEVEL = "3"
+TF_TRT_DISABLE = "1"
 
 [tasks.test_gpu]
-cmd = "python tests/test_gpu.py"                       # check GPU acceleration
+cmd = "python tests/test_gpu.py"
 
 [tasks.test_gpu.env]
-LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
-# ensures TensorFlow finds cudatoolkit + cudnn in Pixi env (Linux only)
-TF_CPP_MIN_LOG_LEVEL = "3"                             # suppress TensorFlow info/warnings/errors
-TF_TRT_DISABLE = "1"                                   # disables TensorRT probing warnings
+LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+TF_CPP_MIN_LOG_LEVEL = "3"
+TF_TRT_DISABLE = "1"
 
 # -------------------------
 # Cross-platform dependencies
@@ -69,10 +69,12 @@ numpy = "==1.26.4"
 reikna = "==0.8.0"                                     # GPU array lib sometimes used
 
 [target.linux-64.dependencies]
+ocl-icd-system = "*"                                   # ICD to discover vendor OpenCL implementations
 cudatoolkit = "==11.2"                                 # CUDA runtime (Linux env-local)
 cudnn = "8.1.*"                                        # cuDNN (Linux env-local)
 
 [target.osx-arm64.dependencies]
+ocl_icd_wrapper_apple = "*"                            # ICD to discover vendor OpenCL implementations
 stardist = "==0.9.1"                                   # latest compatible with Apple Silicon
 csbdeep = "*"                                          # CARE backend
 
