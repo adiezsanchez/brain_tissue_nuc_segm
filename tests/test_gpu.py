@@ -10,8 +10,10 @@ def check_opencl_runtime():
     loader = ctypes.util.find_library("OpenCL")
     if loader is None:
         raise RuntimeError(
-            "OpenCL ICD loader (libOpenCL.so) not found. "
-            "Install `ocl-icd-system` in your conda/pixi env."
+            "OpenCL ICD loader (libOpenCL.so) not found.\n"
+            "👉 Install it on Ubuntu with:\n"
+            "   sudo apt install ocl-icd-opencl-dev clinfo\n"
+            "Or install `ocl-icd-system` in your Pixi/conda env."
         )
 
     # Step 2: check for platforms
@@ -19,9 +21,11 @@ def check_opencl_runtime():
         platforms = cl.get_platforms()
     except cl._cl.LogicError as e:
         raise RuntimeError(
-            "OpenCL loader found, but no vendor ICD runtime detected. "
+            "OpenCL loader found, but no vendor ICD runtime detected.\n"
             "For NVIDIA GPUs, please install the NVIDIA driver with OpenCL support "
-            "(e.g. `libnvidia-compute-<version>` on Ubuntu)."
+            "(e.g. `libnvidia-compute-<version>` on Ubuntu).\n"
+            "👉 To fix inside Pixi, run:\n"
+            "   pixi run fix_opencl"
         ) from e
 
     if not platforms:
@@ -35,14 +39,14 @@ def check_opencl_runtime():
 
 def run_tensorflow_gpu_test():
     """Run a simple GPU stress test with TensorFlow."""
-    print("TensorFlow version:", tf.__version__)
+    print("\nTensorFlow version:", tf.__version__)
     gpus = tf.config.list_physical_devices("GPU")
 
     if not gpus:
         print("❌ No GPU detected by TensorFlow.")
         return
 
-    print("✅ GPUs detected:")
+    print("\n✅ GPUs detected:")
     for i, gpu in enumerate(gpus):
         print(f"  ID {i}: {gpu}")
 
