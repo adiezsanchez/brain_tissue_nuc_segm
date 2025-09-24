@@ -6,6 +6,18 @@ version = "0.1.0"                                      # project version
 platforms = ["linux-64", "win-64", "osx-arm64"]        # supported OS/architectures
 
 # -------------------------
+# Activation-level environment (applies to all tasks)
+# -------------------------
+[activation.env]
+# Applies to Ubuntu
+LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
+# macOS uses DYLD_LIBRARY_PATH instead of LD_LIBRARY_PATH
+DYLD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$DYLD_LIBRARY_PATH"
+
+TF_CPP_MIN_LOG_LEVEL = "3"   # suppress TensorFlow info/warnings/errors
+TF_TRT_DISABLE = "1"         # disables TensorRT probing warnings
+
+# -------------------------
 # Tasks
 # -------------------------
 
@@ -15,26 +27,11 @@ fix_opencl = "scripts/fix_opencl.sh"
 [tasks.lab]
 cmd = "jupyter lab"
 
-[tasks.lab.env]
-LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
-TF_CPP_MIN_LOG_LEVEL = "3"   # suppress TensorFlow info/warnings/errors
-TF_TRT_DISABLE = "1"         # disables TensorRT probing warnings
-
 [tasks.test]
 cmd = "python -m tests.test_pipeline"
 
-[tasks.test.env]
-LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
-TF_CPP_MIN_LOG_LEVEL = "3"
-TF_TRT_DISABLE = "1"
-
 [tasks.test_gpu]
 cmd = "python tests/test_gpu.py"
-
-[tasks.test_gpu.env]
-LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu:$PIXI_PROJECT_ROOT/.pixi/envs/default/lib:$LD_LIBRARY_PATH"
-TF_CPP_MIN_LOG_LEVEL = "3"
-TF_TRT_DISABLE = "1"
 
 # -------------------------
 # Cross-platform dependencies
