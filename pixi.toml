@@ -33,6 +33,9 @@ cmd = "python -m tests.test_pipeline"
 [tasks.test_gpu]
 cmd = "python tests/test_gpu.py"
 
+[tasks.test_mac]
+cmd = "pixi clean --all && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
+
 # -------------------------
 # Cross-platform dependencies
 # -------------------------
@@ -72,8 +75,6 @@ cudnn = "8.1.*"                                        # cuDNN (Linux env-local)
 
 [target.osx-arm64.dependencies]
 ocl_icd_wrapper_apple = "*"                            # ICD to discover vendor OpenCL implementations
-stardist = "==0.9.1"                                   # latest compatible with Apple Silicon
-csbdeep = "*"                                          # CARE backend
 
 # -------------------------
 # PyPI deps (per platform)
@@ -88,6 +89,9 @@ stardist = "==0.8.5"
 csbdeep = "==0.8.1"
 
 [target.osx-arm64.pypi-dependencies]
-tensorflow-macos = "==2.15.1"                          # Apple Silicon TF
-tensorflow-metal = "==1.2.0"                           # Metal backend (GPU acceleration)
+tensorflow-macos = "==2.15.1"                          # stable on M1/M2
+tensorflow-metal = "==1.2.0"                           # GPU acceleration
+keras = "2.15.0"                                       # force compatibility with TF 2.15
+stardist = "==0.8.5"                                   # latest compatible with Apple Silicon
+csbdeep = "==0.8.1"                                    # CARE backend
 
