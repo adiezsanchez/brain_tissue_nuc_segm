@@ -34,7 +34,7 @@ cmd = "python -m tests.test_pipeline"
 cmd = "python tests/test_gpu.py"
 
 [tasks.test_mac]
-cmd = "pixi clean && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
+cmd = "pixi clean && pixi clean cache --yes && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
 
 # -------------------------
 # Cross-platform dependencies
