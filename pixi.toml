@@ -34,7 +34,7 @@ cmd = "python -m tests.test_pipeline"
 cmd = "python tests/test_gpu.py"
 
 [tasks.test_mac]
-cmd = "pixi clean --all && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
+cmd = "pixi clean && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
 
 # -------------------------
 # Cross-platform dependencies
@@ -91,7 +91,7 @@ csbdeep = "==0.8.1"
 [target.osx-arm64.pypi-dependencies]
 tensorflow-macos = "==2.15.1"                          # stable on M1/M2
 tensorflow-metal = "==1.2.0"                           # GPU acceleration
-keras = "2.15.0"                                       # force compatibility with TF 2.15
+keras = "==2.15.0"                                     # force compatibility with TF 2.15
 stardist = "==0.8.5"                                   # latest compatible with Apple Silicon
 csbdeep = "==0.8.1"                                    # CARE backend
 
