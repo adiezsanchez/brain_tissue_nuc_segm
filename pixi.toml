@@ -91,7 +91,7 @@ csbdeep = "==0.8.1"
 [target.osx-arm64.pypi-dependencies]
 tensorflow-macos = "==2.16.2"                          # stable on M1/M2
 tensorflow-metal = "==1.2.0"                           # GPU acceleration
-keras = ">=3.0.0"                                      # force compatibility with TF 2.15
+keras = ">=3.0.0"                                      # force compatibility with TF 2.16
 stardist = "==0.9.1"                                   # latest compatible with Apple Silicon
 csbdeep = "==0.8.1"                                    # CARE backend
 

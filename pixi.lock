@@ -916,11 +916,31 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.2.5-hf787086_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstandard-0.25.0-py310hf151d32_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-h6491c7d_2.conda
+      - pypi: https://files.pythonhosted.org/packages/8f/aa/ba0014cc4659328dc818a28827be78e6d97312ab0cb98105a770924dc11e/absl_py-2.3.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/2b/03/13dde6512ad7b4557eb792fbcf0c653af6076b81e5941d36ec61f7ce6028/astunparse-1.6.3-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a9/b1/f58d8e828799187e18454b4f3ab3e83f40c1817b0ca06ca3011eaec05d4e/csbdeep-0.8.1-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/fc/a7/0d4490de967a67f68a538cc9cdb259bff971c4b5787f7765dc7c8f118f71/keras-2.15.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/f3/a3/ed07505bbf5709eb5ae10b12658b1b97a8b0c7958e8a2c481c83e7ccfe0f/stardist-0.8.5-cp310-cp310-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/b3/c8/b90dc41b1eefc2894801a120cf268b1f25440981fcf966fb055febce8348/tensorflow_macos-2.15.1-cp310-cp310-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/ee/1b/00a78aa2e8fbd63f9af08c9c19e6deb3d5d66b4dda677a0f61654680ee89/flatbuffers-25.9.23-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/a3/61/8001b38461d751cd1a0c3a6ae84346796a5758123f3ed97a1b121dfbf4f3/gast-0.6.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/a3/de/c648ef6835192e6e2cc03f40b19eeda4382c49b5bafb43d88b931c4c74ac/google_pasta-0.2.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fc/c6/eaf9065ff15d0994e1674e71e1ca9542ee47f832b4df0fde1b35e5641fa1/grpcio-1.75.0-cp310-cp310-macosx_11_0_universal2.whl
+      - pypi: https://files.pythonhosted.org/packages/c3/e7/6c860b002329e408348735bfd0459e7b12f712c83d357abeef3ef404eaa9/h5py-3.14.0-cp310-cp310-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/94/5b/4c778cc921ce4b864b238f63f8e3ff6e954ab19b80c9fa680593ad8093d4/keras-3.11.3-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/4b/49/f5e3e7e1419872b69f6f5e82ba56e33955a74bd537d8a1f5f1eff2f3668a/libclang-18.1.1-1-py2.py3-none-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/70/ae/44c4a6a4cbb496d93c6257954260fe3a6e91b7bed2240e5dad2a717f5111/markdown-3.9-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/62/0a/2b586fd10be7b8311068f4078623a73376fc49c8b3768be9965034062982/ml_dtypes-0.3.2-cp310-cp310-macosx_10_9_universal2.whl
+      - pypi: https://files.pythonhosted.org/packages/b2/bc/465daf1de06409cdd4532082806770ee0d8d7df434da79c76564d0f69741/namex-0.1.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/53/8b/ae8ddb511e680eb9d61edd2f5245be88ce050456658fb165550144f9a509/optree-0.17.0-cp310-cp310-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/28/d7/ab27049a035b258dab43445eb6ec84a26277b16105b277cbe0a7698bdc6c/protobuf-4.25.8-cp37-abi3-macosx_10_9_universal2.whl
+      - pypi: https://files.pythonhosted.org/packages/ed/9a/456b9c5a2648f46fa621ac84e090ac6570ae610001fe791d626c20da9d7c/stardist-0.9.1-cp310-cp310-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/3a/d0/b97889ffa769e2d1fdebb632084d5e8b53fc299d43a537acee7ec0c021a3/tensorboard-2.16.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/7a/13/e503968fefabd4c6b2650af21e110aa8466fe21432cd7c43a84577a89438/tensorboard_data_server-0.7.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ea/49/0ba9a26146b93666d9d0a1207b0dbdff24caf96a2102dc1124aa1bcc0c5f/tensorflow-2.16.2-cp310-cp310-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/1c/55/3849a188cc15e58fefde20e9524d124a629a67a06b4dc0f6c881cb3c6e39/tensorflow_io_gcs_filesystem-0.37.1-cp310-cp310-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/25/66/c504f415d5356def468e44e09dad60bf0d0f720b399e6c9af3488382e433/tensorflow_macos-2.16.2-cp310-cp310-macosx_12_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/39/da/463240cc8ff13a57119db62a676e2edca86fb93905a13527872dadf1926e/tensorflow_metal-1.2.0-cp310-cp310-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/4f/bd/de8d508070629b6d84a30d01d57e4a65c69aa7f5abe7560b8fad3b50ea59/termcolor-3.1.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/52/24/ab44c871b0f07f491e5d2ad12c9bd7358e527510618cb1b803a88e986db1/werkzeug-3.1.3-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/win-64/_libavif_api-1.3.0-h57928b3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/_openmp_mutex-4.5-2_gnu.conda
@@ -3647,6 +3667,10 @@ packages:
   name: flatbuffers
   version: 25.2.10
   sha256: ebba5f4d5ea615af3f7fd70fc310636fbb2bbd1f566ac0a23d98dd412de50051
+- pypi: https://files.pythonhosted.org/packages/ee/1b/00a78aa2e8fbd63f9af08c9c19e6deb3d5d66b4dda677a0f61654680ee89/flatbuffers-25.9.23-py2.py3-none-any.whl
+  name: flatbuffers
+  version: 25.9.23
+  sha256: 255538574d6cb6d0a79a17ec8bc0d30985913b87513a01cce8bcdb6b4c44d0e2
 - conda: https://conda.anaconda.org/conda-forge/noarch/flexcache-0.3-pyhd8ed1ab_1.conda
   sha256: acdb7b73d84268773fcc8192965994554411edc488ec3447925a62154e9d3baa
   md5: f1e618f2f783427019071b14a111b30d
@@ -3887,6 +3911,11 @@ packages:
   name: gast
   version: 0.4.0
   sha256: b7adcdd5adbebf1adf17378da5ba3f543684dbec47b1cda1f3997e573cd542c4
+  requires_python: '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*'
+- pypi: https://files.pythonhosted.org/packages/a3/61/8001b38461d751cd1a0c3a6ae84346796a5758123f3ed97a1b121dfbf4f3/gast-0.6.0-py3-none-any.whl
+  name: gast
+  version: 0.6.0
+  sha256: 52b182313f7330389f72b069ba00f174cfe2a06411099547288839c6cbafbd54
   requires_python: '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/gettext-0.25.1-h3f43e3d_1.conda
   sha256: cbfa8c80771d1842c2687f6016c5e200b52d4ca8f2cc119f6377f64f899ba4ff
@@ -4163,6 +4192,14 @@ packages:
   - typing-extensions~=4.12
   - grpcio-tools>=1.75.0 ; extra == 'protobuf'
   requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/fc/c6/eaf9065ff15d0994e1674e71e1ca9542ee47f832b4df0fde1b35e5641fa1/grpcio-1.75.0-cp310-cp310-macosx_11_0_universal2.whl
+  name: grpcio
+  version: 1.75.0
+  sha256: 7ee5ee42bfae8238b66a275f9ebcf6f295724375f2fa6f3b52188008b6380faf
+  requires_dist:
+  - typing-extensions~=4.12
+  - grpcio-tools>=1.75.0 ; extra == 'protobuf'
+  requires_python: '>=3.9'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/gst-plugins-base-1.24.11-h651a532_0.conda
   sha256: a497d2ba34fdfa4bead423cba5261b7e619df3ac491fb0b6231d91da45bd05fc
   md5: d8d8894f8ced2c9be76dc9ad1ae531ce
@@ -4319,6 +4356,13 @@ packages:
   name: h5py
   version: 3.14.0
   sha256: 1223b902ef0b5d90bcc8a4778218d6d6cd0f5561861611eda59fa6c52b922f4d
+  requires_dist:
+  - numpy>=1.19.3
+  requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/c3/e7/6c860b002329e408348735bfd0459e7b12f712c83d357abeef3ef404eaa9/h5py-3.14.0-cp310-cp310-macosx_11_0_arm64.whl
+  name: h5py
+  version: 3.14.0
+  sha256: 6ff2389961ee5872de697054dd5a033b04284afc3fb52dc51d94561ece2c10c6
   requires_dist:
   - numpy>=1.19.3
   requires_python: '>=3.9'
@@ -5184,11 +5228,20 @@ packages:
   name: keras
   version: 2.10.0
   sha256: 26a6e2c2522e7468ddea22710a99b3290493768fc08a39e75d1173a0e3452fdf
-- pypi: https://files.pythonhosted.org/packages/fc/a7/0d4490de967a67f68a538cc9cdb259bff971c4b5787f7765dc7c8f118f71/keras-2.15.0-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/94/5b/4c778cc921ce4b864b238f63f8e3ff6e954ab19b80c9fa680593ad8093d4/keras-3.11.3-py3-none-any.whl
   name: keras
-  version: 2.15.0
-  sha256: 2dcc6d2e30cf9c951064b63c1f4c404b966c59caf09e01f3549138ec8ee0dd1f
-  requires_python: '>=3.8'
+  version: 3.11.3
+  sha256: f484f050e05ee400455b05ec8c36ed35edc34de94256b6073f56cfe68f65491f
+  requires_dist:
+  - absl-py
+  - numpy
+  - rich
+  - namex
+  - h5py
+  - optree
+  - ml-dtypes
+  - packaging
+  requires_python: '>=3.10'
 - pypi: https://files.pythonhosted.org/packages/79/4c/7c3275a01e12ef9368a892926ab932b33bb13d55794881e3573482b378a7/Keras_Preprocessing-1.1.2-py2.py3-none-any.whl
   name: keras-preprocessing
   version: 1.1.2
@@ -6124,6 +6177,10 @@ packages:
   name: libclang
   version: 18.1.1
   sha256: c533091d8a3bbf7460a00cb6c1a71da93bffe148f172c7d03b1c31fbf8aa2a0b
+- pypi: https://files.pythonhosted.org/packages/4b/49/f5e3e7e1419872b69f6f5e82ba56e33955a74bd537d8a1f5f1eff2f3668a/libclang-18.1.1-1-py2.py3-none-macosx_11_0_arm64.whl
+  name: libclang
+  version: 18.1.1
+  sha256: 0b2e143f0fac830156feb56f9231ff8338c20aecfe72b4ffe96f19e5a1dbb69a
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libclang-cpp17-17.0.6-default_hf90f093_8.conda
   sha256: b4c51be4c16b5e4d250b5863f1e1db9eafb4b007d84e4e1e3785267febcfd388
   md5: 72b4d7dc789ea3fe3ee49e3ca7c5d971
@@ -8852,6 +8909,21 @@ packages:
   purls: []
   size: 103088799
   timestamp: 1753975600547
+- pypi: https://files.pythonhosted.org/packages/62/0a/2b586fd10be7b8311068f4078623a73376fc49c8b3768be9965034062982/ml_dtypes-0.3.2-cp310-cp310-macosx_10_9_universal2.whl
+  name: ml-dtypes
+  version: 0.3.2
+  sha256: 7afde548890a92b41c0fed3a6c525f1200a5727205f73dc21181a2726571bb53
+  requires_dist:
+  - numpy>1.20
+  - numpy>=1.21.2 ; python_full_version >= '3.10'
+  - numpy>=1.23.3 ; python_full_version >= '3.11'
+  - numpy>=1.26.0 ; python_full_version >= '3.12'
+  - absl-py ; extra == 'dev'
+  - pytest ; extra == 'dev'
+  - pytest-xdist ; extra == 'dev'
+  - pylint>=2.6.0 ; extra == 'dev'
+  - pyink ; extra == 'dev'
+  requires_python: '>=3.9'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/mpg123-1.32.9-hc50e24c_0.conda
   sha256: 39c4700fb3fbe403a77d8cc27352fa72ba744db487559d5d44bf8411bb4ea200
   md5: c7f302fd11eeb0987a6a5e1f3aed6a21
@@ -8920,6 +8992,10 @@ packages:
   - pkg:pypi/munkres?source=hash-mapping
   size: 15851
   timestamp: 1749895533014
+- pypi: https://files.pythonhosted.org/packages/b2/bc/465daf1de06409cdd4532082806770ee0d8d7df434da79c76564d0f69741/namex-0.1.0-py3-none-any.whl
+  name: namex
+  version: 0.1.0
+  sha256: e2012a474502f1e2251267062aae3114611f07df4224b6e06334c57b0f2ce87c
 - conda: https://conda.anaconda.org/conda-forge/noarch/napari-0.6.4-pyh1bb445c_0.conda
   sha256: dc9ec9e9874c1439823814bbc8d41815eb0092137d60128f51b10c4f5e2d6d43
   md5: b789b8eea53cdbcf73de7263258568fb
@@ -9697,6 +9773,39 @@ packages:
   version: 3.4.0
   sha256: 69bb92469f86a1565195ece4ac0323943e83477171b91d24c35afe028a90d7cd
   requires_python: '>=3.8'
+- pypi: https://files.pythonhosted.org/packages/53/8b/ae8ddb511e680eb9d61edd2f5245be88ce050456658fb165550144f9a509/optree-0.17.0-cp310-cp310-macosx_11_0_arm64.whl
+  name: optree
+  version: 0.17.0
+  sha256: 6e77b6e0b7bb3ecfeb9a92ba605ef21b39bff38829b745af993e2e2b474322e2
+  requires_dist:
+  - typing-extensions>=4.6.0
+  - jax ; extra == 'jax'
+  - numpy ; extra == 'numpy'
+  - torch ; extra == 'torch'
+  - ruff ; extra == 'lint'
+  - pylint[spelling] ; extra == 'lint'
+  - mypy ; extra == 'lint'
+  - doc8 ; extra == 'lint'
+  - pyenchant ; extra == 'lint'
+  - xdoctest ; extra == 'lint'
+  - cpplint ; extra == 'lint'
+  - pre-commit ; extra == 'lint'
+  - pytest ; extra == 'test'
+  - pytest-cov ; extra == 'test'
+  - covdefaults ; extra == 'test'
+  - rich ; extra == 'test'
+  - sphinx ; extra == 'docs'
+  - sphinx-autoapi ; extra == 'docs'
+  - sphinx-autobuild ; extra == 'docs'
+  - sphinx-copybutton ; extra == 'docs'
+  - sphinx-rtd-theme ; extra == 'docs'
+  - sphinxcontrib-bibtex ; extra == 'docs'
+  - sphinx-autodoc-typehints ; extra == 'docs'
+  - docutils ; extra == 'docs'
+  - jax[cpu] ; extra == 'docs'
+  - numpy ; extra == 'docs'
+  - torch ; extra == 'docs'
+  requires_python: '>=3.9'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/orc-2.2.0-h1bc01a4_0.conda
   sha256: 9a64535b36ae6776334a7923e91e2dc8d7ce164ee71d2d5075d7867dbd68e7a8
   md5: 53ab33c0b0ba995d2546e54b2160f3fd
@@ -10308,6 +10417,11 @@ packages:
   version: 3.19.6
   sha256: 347b393d4dd06fb93a77620781e11c058b3b0a5289262f094379ada2920a3730
   requires_python: '>=3.5'
+- pypi: https://files.pythonhosted.org/packages/28/d7/ab27049a035b258dab43445eb6ec84a26277b16105b277cbe0a7698bdc6c/protobuf-4.25.8-cp37-abi3-macosx_10_9_universal2.whl
+  name: protobuf
+  version: 4.25.8
+  sha256: ca809b42f4444f144f2115c4c1a747b9a404d590f18f37e9402422033e464e0f
+  requires_python: '>=3.8'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/psutil-7.1.0-py310h7c4b9e2_0.conda
   sha256: 3e814f2a006c4a031ad6a08c4d44ed754e035b6eb25533237c8cdfa52d63f103
   md5: b1683bdb8b834126823a034d5f29efb2
@@ -12533,12 +12647,12 @@ packages:
   - pytest>=7.2.0 ; python_full_version >= '3.7' and extra == 'test'
   - csbdeep[tf1]>=0.7.4 ; extra == 'tf1'
   requires_python: '>=3.6'
-- pypi: https://files.pythonhosted.org/packages/f3/a3/ed07505bbf5709eb5ae10b12658b1b97a8b0c7958e8a2c481c83e7ccfe0f/stardist-0.8.5-cp310-cp310-macosx_11_0_arm64.whl
+- pypi: https://files.pythonhosted.org/packages/ed/9a/456b9c5a2648f46fa621ac84e090ac6570ae610001fe791d626c20da9d7c/stardist-0.9.1-cp310-cp310-macosx_12_0_arm64.whl
   name: stardist
-  version: 0.8.5
-  sha256: bee37e865eac3563c3f1a68dc00b20a6e7f6df7cb90bb3b78ff4776bcf0516d2
+  version: 0.9.1
+  sha256: de25d3cd8e9e67d21837a44106fe37bab25b051e4d23c010ee7dddcff4ffe8fb
   requires_dist:
-  - csbdeep>=0.7.4
+  - csbdeep>=0.8.0
   - scikit-image
   - numba
   - imageio
@@ -12546,7 +12660,7 @@ packages:
   - importlib-metadata ; extra == 'bioimageio'
   - pytest ; python_full_version < '3.7' and extra == 'test'
   - pytest>=7.2.0 ; python_full_version >= '3.7' and extra == 'test'
-  - csbdeep[tf1]>=0.7.4 ; extra == 'tf1'
+  - csbdeep[tf1]>=0.8.0 ; extra == 'tf1'
   requires_python: '>=3.6'
 - conda: https://conda.anaconda.org/conda-forge/win-64/stardist-0.8.5-py310h1c4a608_1.conda
   sha256: 3cb30a0f28c1558eaab49a3db2215eb6fa172734a3394f78cca9f383e6d662fe
@@ -12661,6 +12775,21 @@ packages:
   - werkzeug>=1.0.1
   - wheel>=0.26
   requires_python: '>=3.6'
+- pypi: https://files.pythonhosted.org/packages/3a/d0/b97889ffa769e2d1fdebb632084d5e8b53fc299d43a537acee7ec0c021a3/tensorboard-2.16.2-py3-none-any.whl
+  name: tensorboard
+  version: 2.16.2
+  sha256: 9f2b4e7dad86667615c0e5cd072f1ea8403fc032a299f0072d6f74855775cc45
+  requires_dist:
+  - absl-py>=0.4
+  - grpcio>=1.48.2
+  - markdown>=2.6.8
+  - numpy>=1.12.0
+  - protobuf>=3.19.6,!=4.24.0
+  - setuptools>=41.0.0
+  - six>1.9
+  - tensorboard-data-server>=0.7.0,<0.8.0
+  - werkzeug>=1.0.1
+  requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/60/f9/802efd84988bffd9f644c03b6e66fde8e76c3aa33db4279ddd11c5d61f4b/tensorboard_data_server-0.6.1-py3-none-manylinux2010_x86_64.whl
   name: tensorboard-data-server
   version: 0.6.1
@@ -12671,6 +12800,11 @@ packages:
   version: 0.6.1
   sha256: 809fe9887682d35c1f7d1f54f0f40f98bb1f771b14265b453ca051e2ce58fca7
   requires_python: '>=3.6'
+- pypi: https://files.pythonhosted.org/packages/7a/13/e503968fefabd4c6b2650af21e110aa8466fe21432cd7c43a84577a89438/tensorboard_data_server-0.7.2-py3-none-any.whl
+  name: tensorboard-data-server
+  version: 0.7.2
+  sha256: 7e0610d205889588983836ec05dc098e80f97b7e7bbff7e994ebb78f578d0ddb
+  requires_python: '>=3.7'
 - pypi: https://files.pythonhosted.org/packages/e0/68/e8ecfac5dd594b676c23a7f07ea34c197d7d69b3313afdf8ac1b0a9905a2/tensorboard_plugin_wit-1.8.1-py3-none-any.whl
   name: tensorboard-plugin-wit
   version: 1.8.1
@@ -12731,6 +12865,47 @@ packages:
   - typing-extensions>=3.6.6
   - wrapt>=1.11.0
   requires_python: '>=3.7'
+- pypi: https://files.pythonhosted.org/packages/ea/49/0ba9a26146b93666d9d0a1207b0dbdff24caf96a2102dc1124aa1bcc0c5f/tensorflow-2.16.2-cp310-cp310-macosx_12_0_arm64.whl
+  name: tensorflow
+  version: 2.16.2
+  sha256: 72c84f0e0f8ad0e7cb7b4b3fe9d1c899e6cbebc51c0e64df42a2a32a904aacd7
+  requires_dist:
+  - absl-py>=1.0.0
+  - astunparse>=1.6.0
+  - flatbuffers>=23.5.26
+  - gast>=0.2.1,!=0.5.0,!=0.5.1,!=0.5.2
+  - google-pasta>=0.1.1
+  - h5py>=3.10.0
+  - libclang>=13.0.0
+  - ml-dtypes~=0.3.1
+  - opt-einsum>=2.3.2
+  - packaging
+  - protobuf>=3.20.3,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0.dev0
+  - requests>=2.21.0,<3
+  - setuptools
+  - six>=1.12.0
+  - termcolor>=1.1.0
+  - typing-extensions>=3.6.6
+  - wrapt>=1.11.0
+  - grpcio>=1.24.3,<2.0
+  - tensorboard>=2.16,<2.17
+  - keras>=3.0.0
+  - tensorflow-io-gcs-filesystem>=0.23.1 ; python_full_version < '3.12'
+  - numpy>=1.23.5,<2.0.0 ; python_full_version < '3.12'
+  - numpy>=1.26.0,<2.0.0 ; python_full_version >= '3.12'
+  - nvidia-cublas-cu12==12.3.4.1 ; extra == 'and-cuda'
+  - nvidia-cuda-cupti-cu12==12.3.101 ; extra == 'and-cuda'
+  - nvidia-cuda-nvcc-cu12==12.3.107 ; extra == 'and-cuda'
+  - nvidia-cuda-nvrtc-cu12==12.3.107 ; extra == 'and-cuda'
+  - nvidia-cuda-runtime-cu12==12.3.101 ; extra == 'and-cuda'
+  - nvidia-cudnn-cu12==8.9.7.29 ; extra == 'and-cuda'
+  - nvidia-cufft-cu12==11.0.12.1 ; extra == 'and-cuda'
+  - nvidia-curand-cu12==10.3.4.107 ; extra == 'and-cuda'
+  - nvidia-cusolver-cu12==11.5.4.101 ; extra == 'and-cuda'
+  - nvidia-cusparse-cu12==12.2.0.103 ; extra == 'and-cuda'
+  - nvidia-nccl-cu12==2.19.3 ; extra == 'and-cuda'
+  - nvidia-nvjitlink-cu12==12.3.101 ; extra == 'and-cuda'
+  requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/b6/05/9d7f3a6c783669cba36a6eb4555d0c73a516eee935dde6176dfb8512f94e/tensorflow_estimator-2.10.0-py2.py3-none-any.whl
   name: tensorflow-estimator
   version: 2.10.0
@@ -12747,6 +12922,17 @@ packages:
   - tensorflow-gpu>=2.11.0,<2.12.0 ; extra == 'tensorflow-gpu'
   - tensorflow-rocm>=2.11.0,<2.12.0 ; extra == 'tensorflow-rocm'
   requires_python: '>=3.7,<3.12'
+- pypi: https://files.pythonhosted.org/packages/1c/55/3849a188cc15e58fefde20e9524d124a629a67a06b4dc0f6c881cb3c6e39/tensorflow_io_gcs_filesystem-0.37.1-cp310-cp310-macosx_12_0_arm64.whl
+  name: tensorflow-io-gcs-filesystem
+  version: 0.37.1
+  sha256: 257aab23470a0796978efc9c2bcf8b0bc80f22e6298612a4c0a50d3f4e88060c
+  requires_dist:
+  - tensorflow>=2.16.0,<2.17.0 ; extra == 'tensorflow'
+  - tensorflow-aarch64>=2.16.0,<2.17.0 ; extra == 'tensorflow-aarch64'
+  - tensorflow-cpu>=2.16.0,<2.17.0 ; extra == 'tensorflow-cpu'
+  - tensorflow-gpu>=2.16.0,<2.17.0 ; extra == 'tensorflow-gpu'
+  - tensorflow-rocm>=2.16.0,<2.17.0 ; extra == 'tensorflow-rocm'
+  requires_python: '>=3.7,<3.13'
 - pypi: https://files.pythonhosted.org/packages/f3/48/47b7d25572961a48b1de3729b7a11e835b888e41e0203cca82df95d23b91/tensorflow_io_gcs_filesystem-0.37.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: tensorflow-io-gcs-filesystem
   version: 0.37.1
@@ -12758,26 +12944,25 @@ packages:
   - tensorflow-gpu>=2.16.0,<2.17.0 ; extra == 'tensorflow-gpu'
   - tensorflow-rocm>=2.16.0,<2.17.0 ; extra == 'tensorflow-rocm'
   requires_python: '>=3.7,<3.13'
-- pypi: https://files.pythonhosted.org/packages/b3/c8/b90dc41b1eefc2894801a120cf268b1f25440981fcf966fb055febce8348/tensorflow_macos-2.15.1-cp310-cp310-macosx_12_0_arm64.whl
+- pypi: https://files.pythonhosted.org/packages/25/66/c504f415d5356def468e44e09dad60bf0d0f720b399e6c9af3488382e433/tensorflow_macos-2.16.2-cp310-cp310-macosx_12_0_arm64.whl
   name: tensorflow-macos
-  version: 2.15.1
-  sha256: b8f01d7615fe4ff3b15a12f84471bd5344fed187543c4a091da3ddca51b6dc26
+  version: 2.16.2
+  sha256: 6a945ad9c0add0d9be46f1addc07e5475ac24217609bfea6e05d9c5ab66e7204
   requires_dist:
-  - tensorflow-macos==2.15.1 ; platform_machine == 'arm64' and sys_platform == 'darwin'
-  - tensorflow-cpu-aws==2.15.1 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'arm64' and sys_platform == 'linux')
-  - tensorflow-intel==2.15.1 ; sys_platform == 'win32'
-  - nvidia-cublas-cu12==12.2.5.6 ; extra == 'and-cuda'
-  - nvidia-cuda-cupti-cu12==12.2.142 ; extra == 'and-cuda'
-  - nvidia-cuda-nvcc-cu12==12.2.140 ; extra == 'and-cuda'
-  - nvidia-cuda-nvrtc-cu12==12.2.140 ; extra == 'and-cuda'
-  - nvidia-cuda-runtime-cu12==12.2.140 ; extra == 'and-cuda'
-  - nvidia-cudnn-cu12==8.9.4.25 ; extra == 'and-cuda'
-  - nvidia-cufft-cu12==11.0.8.103 ; extra == 'and-cuda'
-  - nvidia-curand-cu12==10.3.3.141 ; extra == 'and-cuda'
-  - nvidia-cusolver-cu12==11.5.2.141 ; extra == 'and-cuda'
-  - nvidia-cusparse-cu12==12.1.2.141 ; extra == 'and-cuda'
-  - nvidia-nccl-cu12==2.16.5 ; extra == 'and-cuda'
-  - nvidia-nvjitlink-cu12==12.2.140 ; extra == 'and-cuda'
+  - tensorflow==2.16.2 ; platform_machine == 'arm64' and sys_platform == 'darwin'
+  - tensorflow-intel==2.16.2 ; sys_platform == 'win32'
+  - nvidia-cublas-cu12==12.3.4.1 ; extra == 'and-cuda'
+  - nvidia-cuda-cupti-cu12==12.3.101 ; extra == 'and-cuda'
+  - nvidia-cuda-nvcc-cu12==12.3.107 ; extra == 'and-cuda'
+  - nvidia-cuda-nvrtc-cu12==12.3.107 ; extra == 'and-cuda'
+  - nvidia-cuda-runtime-cu12==12.3.101 ; extra == 'and-cuda'
+  - nvidia-cudnn-cu12==8.9.7.29 ; extra == 'and-cuda'
+  - nvidia-cufft-cu12==11.0.12.1 ; extra == 'and-cuda'
+  - nvidia-curand-cu12==10.3.4.107 ; extra == 'and-cuda'
+  - nvidia-cusolver-cu12==11.5.4.101 ; extra == 'and-cuda'
+  - nvidia-cusparse-cu12==12.2.0.103 ; extra == 'and-cuda'
+  - nvidia-nccl-cu12==2.19.3 ; extra == 'and-cuda'
+  - nvidia-nvjitlink-cu12==12.3.101 ; extra == 'and-cuda'
   requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/39/da/463240cc8ff13a57119db62a676e2edca86fb93905a13527872dadf1926e/tensorflow_metal-1.2.0-cp310-cp310-macosx_12_0_arm64.whl
   name: tensorflow-metal
