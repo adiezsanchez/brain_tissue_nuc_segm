@@ -27,14 +27,14 @@ fix_opencl = "scripts/fix_opencl.sh"
 [tasks.lab]
 cmd = "jupyter lab"
 
-[tasks.test]
-cmd = "python -m tests.test_pipeline"
+[tasks.test_nuclei]
+cmd = "python -m pixi_tests.test_nuclei"
 
 [tasks.test_gpu]
-cmd = "python tests/test_gpu.py"
+cmd = "python pixi_tests/test_gpu.py"
 
-[tasks.test_mac]
-cmd = "pixi clean && pixi clean cache --yes && pixi install && pixi run test_gpu && pixi run test && pixi run lab"
+[tasks.test]
+cmd = "pixi run test_gpu && pixi run test_nuclei && pixi run lab"
 
 # -------------------------
 # Cross-platform dependencies

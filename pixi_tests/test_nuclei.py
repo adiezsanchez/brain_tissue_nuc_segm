@@ -6,7 +6,7 @@ import os
 import gc
 import numpy as np
 from tqdm import tqdm
-from Stardist.utils_stardist import get_gpu_details, list_images, check_files, read_image, extract_nuclei_stack, get_stardist_model, segment_nuclei, remove_labels_touching_roi_edge
+from Stardist.utils_stardist import get_gpu_details, list_images, read_image, extract_nuclei_stack, get_stardist_model, segment_nuclei, remove_labels_touching_roi_edge
 
 get_gpu_details()
 
