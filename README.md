@@ -42,9 +42,11 @@ Type the following command after cloning the Github repo (cd will get you inside
 
 <img src="./assets/pixi_banner.svg">
 
-If you want to use the latest in environment managers I do recommend switching to [Pixi](https://pixi.sh/latest/installation/), it will pay off in the short term. Type the following command and enjoy the fastest venv manager in the market:
+If you want to use the latest in environment managers I do recommend switching to [Pixi](https://pixi.sh/latest/installation/), it will pay off in the short term. 
 
-<code>cd brain_tissue_nuc_segm && pixi install</code>
+After installing pixi, type the following command and enjoy the fastest venv manager in the market. After it is done installing your virtual environment it will launch a Jupyter Server in your browser so you can interact with the pipelines.
+
+<code>cd brain_tissue_nuc_segm && pixi run lab</code>
 
 Finally, launch VS Code (or your IDE of choice) to interact with the analysis pipelines.
 
