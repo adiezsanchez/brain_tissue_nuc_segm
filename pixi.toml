@@ -54,6 +54,7 @@ plotly = "*"                                           # plotting library
 pyclesperanto-prototype = "*"                          # GPU image processing (OpenCL)
 pyqt = "*"                                             # GUI backend for napari
 python = "==3.10"                                      # freeze Python version
+setuptools = "<81"                                     # pin to avoid pkg_resources removal
 
 # -------------------------
 # Platform-specific deps
