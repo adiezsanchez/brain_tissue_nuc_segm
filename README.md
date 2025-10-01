@@ -15,6 +15,7 @@ Watch the video series below to learn how to set up the required tools, explore 
 
 |  | Watch on YouTube | Description |
 |-------|------------------|-------------|
+| <img src="./assets/pixi_thumbnail.png" width="720"> | [Pipeline installation using Pixi](https://youtu.be/tzdFuxF2E3U) | TL;DR You are busy in the wet lab and want to get your hands on in this tool and start using it ASAP.  |
 | <img src="./assets/part0_thumbnail.png" width="720"> | [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) | If you are not familiar with Python, Virtual Environments, Integrated Developer Environments (IDEs) or version control this is the place to start. In this video we will cover how to configure your Windows machine to be able to run this pipeline  |
 | <img src="./assets/part1_thumbnail.png" width="720"> | [Intro and functionalities](https://www.youtube.com/watch?v=LwmiMrMs-_c) | Introduction and showcase to the image analysis functionalities of the NEUROSEG Jupyter Notebook collection. Includes an explanation of the 3 available methods to define marker positive cells |
 | <img src="./assets/part2_thumbnail.png" width="720"> | [Pipeline Workflow](https://www.youtube.com/watch?v=O70ggeeQxPs) | Walkthrough of the pipeline workflow: where to start, the order in which to run each notebook, and what steps to take before batch processing your images  |
@@ -36,11 +37,19 @@ Then proceed to the next step either using **Mamba** or **Pixi** as your environ
 
 <img src="./assets/mamba_banner.png">
 
+|  | Watch on YouTube | Description |
+|-------|------------------|-------------|
+| <img src="./assets/part0_thumbnail.png" width="360"> | [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) | If you are not familiar with Python, Virtual Environments, Integrated Developer Environments (IDEs) or version control this is the place to start. In this video we will cover how to configure your Windows machine to be able to run this pipeline  |
+
 Type the following command after cloning the Github repo (cd will get you inside the local repository folder and mamba will create the virtual environment):
 
 <code>cd brain_tissue_nuc_segm && mamba env create -f environment.yml</code>
 
 <img src="./assets/pixi_banner.svg">
+
+|  | Watch on YouTube | Description |
+|-------|------------------|-------------|
+| <img src="./assets/pixi_thumbnail.png" width="170"> | [Pipeline installation using Pixi](https://youtu.be/tzdFuxF2E3U) | TL;DR You are busy in the wet lab and want to get your hands on in this tool and start using it ASAP.  |
 
 If you want to use the latest in environment managers I do recommend switching to [Pixi](https://pixi.sh/latest/installation/), it will pay off in the short term. 
 
