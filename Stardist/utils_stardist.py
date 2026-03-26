@@ -1,6 +1,7 @@
 from csbdeep.utils import normalize
 from tensorflow.python.client import device_lib
 from pathlib import Path
+import oirfile
 import czifile
 import nd2
 import tifffile
@@ -39,6 +40,9 @@ def list_images (directory_path, format=None):
             images.append(str(file_path))
             
         for file_path in directory_path.glob("*.nd2"):
+            images.append(str(file_path))
+
+        for file_path in directory_path.glob("*.oir"):
             images.append(str(file_path))
 
     return images
@@ -125,6 +129,19 @@ def read_image (image, slicing_factor_xy, slicing_factor_z):
         if len(img.shape) < 4:
             # Build a (ch, 2, x, y) stack
             img = np.stack([img, img], axis=1)
+
+    elif extension == ".oir":
+        # Read stack from .oir 
+        img = oirfile.imread(image)
+        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
+        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
+        # I know inefficient, but do not want to change all the downstream code
+        if len(img.shape) < 4:
+            # Build a (ch, 2, x, y) stack
+            img = np.stack([img, img], axis=1)
+        else:
+            # Transpose to output (ch, z, x, y)
+            img = img.transpose(1, 0, 2, 3)
 
     elif extension == ".nd2":
         # Read stack from .nd2 (z, ch, x, y) or (ch, x, y)
