@@ -3,6 +3,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256567.svg)](https://doi.org/10.5281/zenodo.19256567)
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
+[![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=21320&r=123)
 
 This repository provides tools in the form of interactive **Jupyter Notebooks** to define **cell populations** based on the presence or absence of **multiple fluorescent markers** in **multichannel 3D-stacks or 2D-images**. 
 
