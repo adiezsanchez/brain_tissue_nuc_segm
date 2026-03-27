@@ -1,6 +1,7 @@
 from csbdeep.utils import normalize
 from tensorflow.python.client import device_lib
 from pathlib import Path
+import oirfile
 import czifile
 import nd2
 import tifffile
@@ -14,6 +15,8 @@ import pyclesperanto_prototype as cle
 import warnings
 
 cle.select_device("RTX")
+
+SUPPORTED_VENDOR_EXTENSIONS = (".czi", ".nd2", ".oir")
 
 def get_gpu_details():
     devices = device_lib.list_local_devices()
@@ -34,12 +37,9 @@ def list_images (directory_path, format=None):
             images.append(str(file_path))
 
     else:
-        # Iterate through the .czi and .nd2 files in the directory
-        for file_path in directory_path.glob("*.czi"):
-            images.append(str(file_path))
-            
-        for file_path in directory_path.glob("*.nd2"):
-            images.append(str(file_path))
+        # Iterate through the supported vendor files in the directory (.czi, .nd2 and .oir)
+        for ext in SUPPORTED_VENDOR_EXTENSIONS:
+            images.extend(str(file_path) for file_path in directory_path.glob(f"*{ext}"))
 
     return images
 
@@ -92,7 +92,7 @@ def check_files(images, directory_path, segmentation_type, model_name, filetype)
             print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
 def read_image (image, slicing_factor_xy, slicing_factor_z):
-    """Read raw image microscope files (.nd2 and .czi), apply downsampling if needed and return filename and a numpy array
+    f"""Read raw image microscope files {SUPPORTED_VENDOR_EXTENSIONS}, apply downsampling if needed and return filename and a numpy array
     Originally intended to read multichannel 3D-stack images (ch, z, x, y), if input image is a multichannel
     2D-image the function generates a fake stack of shape (ch, 2, x, y) where both z-slices contain the same
     information. This would be transformed to the original input 2D-image when segmentation_type = '2D' """
@@ -125,6 +125,19 @@ def read_image (image, slicing_factor_xy, slicing_factor_z):
         if len(img.shape) < 4:
             # Build a (ch, 2, x, y) stack
             img = np.stack([img, img], axis=1)
+
+    elif extension == ".oir":
+        # Read stack from .oir 
+        img = oirfile.imread(image)
+        # Check if input image is a multichannel 3D-stack or a multichannel 2D-image
+        # If multichannel 2D-image simulate a 3D-stack with 2 equal z-slices
+        # I know inefficient, but do not want to change all the downstream code
+        if len(img.shape) < 4:
+            # Build a (ch, 2, x, y) stack
+            img = np.stack([img, img], axis=1)
+        else:
+            # Transpose to output (ch, z, x, y)
+            img = img.transpose(1, 0, 2, 3)
 
     elif extension == ".nd2":
         # Read stack from .nd2 (z, ch, x, y) or (ch, x, y)
