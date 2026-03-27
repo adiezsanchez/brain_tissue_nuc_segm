@@ -1,5 +1,6 @@
 <h1>Nuclear Segmentation Utility for Brain and Organoid fluorescent samples (NEUROSEG) - Identify marker positive cells based on fluorescence intensity</h1>
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256567.svg)](https://doi.org/10.5281/zenodo.19256567)
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
 
