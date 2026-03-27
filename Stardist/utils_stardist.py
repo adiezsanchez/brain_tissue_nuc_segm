@@ -16,6 +16,8 @@ import warnings
 
 cle.select_device("RTX")
 
+SUPPORTED_VENDOR_EXTENSIONS = (".czi", ".nd2", ".oir")
+
 def get_gpu_details():
     devices = device_lib.list_local_devices()
     for device in devices:
@@ -35,15 +37,9 @@ def list_images (directory_path, format=None):
             images.append(str(file_path))
 
     else:
-        # Iterate through the .czi and .nd2 files in the directory
-        for file_path in directory_path.glob("*.czi"):
-            images.append(str(file_path))
-            
-        for file_path in directory_path.glob("*.nd2"):
-            images.append(str(file_path))
-
-        for file_path in directory_path.glob("*.oir"):
-            images.append(str(file_path))
+        # Iterate through the supported vendor files in the directory (.czi, .nd2 and .oir)
+        for ext in SUPPORTED_VENDOR_EXTENSIONS:
+            images.extend(str(file_path) for file_path in directory_path.glob(f"*{ext}"))
 
     return images
 
