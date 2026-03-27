@@ -92,7 +92,7 @@ def check_files(images, directory_path, segmentation_type, model_name, filetype)
             print(f"\nAll {filetype} files found in '{subfolder_path}'. Total: {len(filenames)}")
 
 def read_image (image, slicing_factor_xy, slicing_factor_z):
-    """Read raw image microscope files (.nd2 and .czi), apply downsampling if needed and return filename and a numpy array
+    f"""Read raw image microscope files {SUPPORTED_VENDOR_EXTENSIONS}, apply downsampling if needed and return filename and a numpy array
     Originally intended to read multichannel 3D-stack images (ch, z, x, y), if input image is a multichannel
     2D-image the function generates a fake stack of shape (ch, 2, x, y) where both z-slices contain the same
     information. This would be transformed to the original input 2D-image when segmentation_type = '2D' """
