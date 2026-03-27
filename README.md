@@ -61,7 +61,7 @@ Finally, launch VS Code (or your IDE of choice) to interact with the analysis pi
 
 ## Overview
 
-The pipeline begins with **nuclear segmentation**, performed using either **StarDist** or **Cellpose**, with support for custom-trained models. Based on the predicted **2D/3D nuclei labels**, the researcher can artificially generate (via a dilation operation):
+The pipeline begins with **nuclear segmentation**, performed using **StarDist**, with support for custom-trained models. Based on the predicted **2D/3D nuclei labels**, the researcher can artificially generate (via a dilation operation):
 
 - the **cytoplasmic area/volume**, or  
 - the **entire cellular area/volume**
