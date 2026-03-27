@@ -30,6 +30,8 @@ Analysis can be performed on the **whole image** (default) or on **multiple user
 
 > [!TIP]
 > In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments, IDEs and Git. If you are not familiar with those concepts worry not. Watch the [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) video, it will guide you through the necessary steps and cover all basic concepts.
+> 
+> TL;DR You are busy in the wet lab, skip to the Pixi section below.
 
 Once you have your developer stack ready you can simply clone this repository using:
 
