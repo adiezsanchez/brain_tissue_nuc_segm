@@ -140,7 +140,7 @@ Trained on images of mouse hippocampi from 30 µm tissue sections. Images acquir
 
 <h2>Original mamba + pip install command</h2>
 
-Needed some manual downgrades to make Stardist NMS step leverage Multithreading in CPU operations. See this [image.sc thread](https://forum.image.sc/t/difficulty-installing-stardist-tensorflow-gputools-with-anaconda/104305/15) for more info
+Needed some manual downgrades to make Stardist NMS step leverage Multithreading in CPU operations (on Windows OS). See this [image.sc thread](https://forum.image.sc/t/difficulty-installing-stardist-tensorflow-gputools-with-anaconda/104305/15) for more info
 
 <details>
 <summary>Conda/Mamba commands</summary>
