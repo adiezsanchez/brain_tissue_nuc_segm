@@ -3,7 +3,10 @@ message: "If you use this software, please cite it as below."
 authors:
 - family-names: Díez-Sánchez
   given-names: Alberto
-orcid: https://orcid.org/0000-0001-5146-3089
+  orcid: https://orcid.org/0000-0001-5146-3089
 title:adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0
 version: v1.0.0
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19256567
 date-released: 2026-03-27
