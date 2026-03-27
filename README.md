@@ -11,7 +11,8 @@ Analysis can be performed on the **whole image** (default) or on **multiple user
 
 ## What can this pipeline do for me?
 
-Watch the video series below to learn how to set up the required tools, explore the capabilities of the pipeline, and understand how to use it effectively.
+> [!TIP]
+> Watch the video series below to learn how to set up the required tools, explore the capabilities of the pipeline, and understand how to use it effectively.
 
 |  | Watch on YouTube | Description |
 |-------|------------------|-------------|
@@ -27,7 +28,8 @@ Watch the video series below to learn how to set up the required tools, explore 
 
 <h2>How to install this tool? (Environment setup)</h2>
 
-In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments, IDEs and Git. If you are not familiar with those concepts worry not. Watch the [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) video, it will guide you through the necessary steps and cover all basic concepts.
+> [!TIP]
+> In order to run these Jupyter notebooks and .py scripts you will need to familiarize yourself with the use of Python virtual environments, IDEs and Git. If you are not familiar with those concepts worry not. Watch the [Before you start (Python, IDE and Git on Windows)](https://youtu.be/tzdFuxF2E3U) video, it will guide you through the necessary steps and cover all basic concepts.
 
 Once you have your developer stack ready you can simply clone this repository using:
 
@@ -51,7 +53,8 @@ Type the following command after cloning the Github repo (cd will get you inside
 |-------|------------------|-------------|
 | <img src="./assets/pixi_thumbnail.png" width="170"> | [Pipeline installation using Pixi](https://youtu.be/tzdFuxF2E3U) | TL;DR You are busy in the wet lab and want to get your hands on in this tool and start using it ASAP.  |
 
-If you want to use the latest in environment managers I do recommend switching to [Pixi](https://pixi.sh/latest/installation/), it will pay off in the short term. 
+> [!TIP]
+> If you want to use the latest in environment managers I do recommend switching to [Pixi](https://pixi.sh/latest/installation/), it will pay off in the short term. 
 
 After installing pixi, type the following command and enjoy the fastest venv manager in the market. After it is done installing your virtual environment it will launch a Jupyter Server in your browser so you can interact with the pipelines.
 
@@ -69,10 +72,13 @@ The pipeline begins with **nuclear segmentation**, performed using **StarDist**,
 These compartments are used to check for the **presence of fluorescent markers** restricted to those regions.
 
 ## Methods for Defining Positive Cells
+> [!IMPORTANT]  
+> After segmentation, one of the following **three methods** (see description below) can be used to determine whether a cell is positive for a marker. Each method has a SP (single-processing) and BP (batch-processing) mode. SP mode allows to explore different images in your dataset, apply the defining method and visualize the results in Napari in order to define your BP settings. BP mode applies the settings defined in SP mode to all images in a folder with no visual feedback in Napari. You can perform a QC check of the BP mode using **`005_Napari_segm_viz.ipynb`** after the run is complete. 
 
-After segmentation, one of the following **three methods** can be used to determine whether a cell is positive for a marker. Each method has a SP (single-processing) and BP (batch-processing) mode. SP mode allows to explore different images in your dataset, apply the defining method and visualize the results in Napari in order to define your BP settings. BP mode applies the settings defined in SP mode to all images in a folder with no visual feedback in Napari. You can perform a QC check of the BP mode using **`005_Napari_segm_viz.ipynb`** after the run is complete. 
+<details>
+<summary>Methods description</summary>
 
-### 1. Average Intensity Measurement with Min-Max Thresholding 
+#### 1. Average Intensity Measurement with Min-Max Thresholding
 
 - Computes the **average intensity** of each marker within the cellular compartment.
 - A cell is considered **positive** if the average intensity falls within the **user-defined min and max thresholds**.
@@ -91,6 +97,7 @@ After segmentation, one of the following **three methods** can be used to determ
 - Allows training of an **object classifier** using **signal intensity features**.
 - Requires manual annotation of a few sample objects in **Napari** using **`!_APOC_Obj_Class_training.ipynb`**
 - Run **`000_SP_Object_Classifier.ipynb`** & **`003_BP_Object_Classifier.ipynb`**.
+</details>
 
 ## Downstream Analysis
 
@@ -100,15 +107,18 @@ Once positive cells are identified:
 - Visualize segmentation results and subpopulations in **Napari** using  **`005_Napari_segm_viz.ipynb`**
 
 ## Input & File Formats
-
-- Accepts **multichannel 3D stacks** (multiple z-slices) and **multichannel 2D images** (single z-plane) from **Nikon (.nd2)** and **Zeiss (.czi)** systems.
-- Analysis can be performed on the **3D volume**, a **2D maximum intensity projection** of the original 3D volume (to speed computations) or on the **original 2D image input**.
-- To support additional file formats, modify the `read_image()` function in  **`utils_stardist.py`** to return a **NumPy array** with shape `(ch, z, x, y)`.
+> [!NOTE]  
+>- Accepts **multichannel 3D stacks** (multiple z-slices) and **multichannel 2D images** (single z-plane) from **Nikon (.nd2)**, **Zeiss (.czi)** and **Olympus (.oir)** systems.
+>- If you have a different file format convert it into **(.tif/.tiff/.ome-tiff)** and the pipeline will read it.
+>- Analysis can be performed on the **3D volume**, a **2D maximum intensity projection** of the original 3D volume (to speed computations) or on the **original 2D image input**.
+>- To support additional file formats, modify the `read_image()` function in  **`utils_stardist.py`** to return a **NumPy array** with shape `(ch, z, x, y)`.
 
 <h2>Pretrained Stardist Models</h2>
 
 This repository contains a few pretrained models applied by users at NTNU. You can also train your own after annotating a 2D or 3D subset of your dataset (then use the JN under <code>Stardist/Stardist_model_training</code>). For annotation instructions see the [Stardist repository](https://github.com/stardist/stardist). Pre-trained models with an sf_ suffix have been trained using downsampled input data in x and y, i.e. sf_None is trained using the full resolution images but sf_2 and sf_4 are downsampled by a factor if 2 and 4 respectively. This allows quicker nuclei label predictions in high resolution images. MEC 0.1 is the default model applied to the test_data you can obtain by [contacting me](mailto:alberto.d.sanchez@ntnu.no).
 
+<details>
+<summary>Available pre-trained models</summary>
 <h4>Hippocampus 1.0</h4>
 
 Trained on images of mouse hippocampi from tissue sections of 5 and 30 µm. Images acquired on a Zeiss LSM880 system using a Plan-Apo 40X/1.4 Oil DIC M27 objective. Scaling per Pixel (x, y, z): 0.35µm x 0.35µm x 0.9µm. For detailed acquisition metadata see raw_data/test_data. Stardist3D model meant to be used with an image stack (multiple z-slices). Model rescued from this [repo](https://github.com/jvgrini/nuclei).
@@ -124,10 +134,14 @@ Trained on images of human iPSC-derived brain organoid 18 µm sections. Images a
 <h4>3D_brain_Nikon_dagnysd_0.5</h4>
 
 Trained on images of mouse hippocampi from 30 µm tissue sections. Images acquired on a Nikon Ti2 Crestoptics V3 spinning disk using a PLAN APO λD 40x OFN25 DIC N2 air objective. Scaling per Pixel (x, y, z): 0.166µm x 0.166µm x 0.5µm. For detailed acquisition metadata see <code>training_data/thick_brain_Nikon_dagnysd_0.5/A2_Brain4_C_TR1_ROI_1.nd2</code>. Stardist3D model meant to be used with an image stack (multiple z-slices).
+</details>
 
 <h2>Original mamba + pip install command</h2>
 
 Needed some manual downgrades to make Stardist NMS step leverage Multithreading in CPU operations. See this [image.sc thread](https://forum.image.sc/t/difficulty-installing-stardist-tensorflow-gputools-with-anaconda/104305/15) for more info
+
+<details>
+<summary>Conda/Mamba commands</summary>
 
    <code>mamba create --name brain_nuc_stardist python=3.10 napari pyclesperanto-prototype apoc-backend plotly pyqt nbformat nd2 czifile ipykernel ipython cudatoolkit=11.2 cudnn=8.1.0 -c conda-forge</code>
 
@@ -146,3 +160,4 @@ Needed some manual downgrades to make Stardist NMS step leverage Multithreading 
    <code>pip install numpy==1.26.4</code>
 
    <code>pip install numba==0.59.1</code>
+</details>
