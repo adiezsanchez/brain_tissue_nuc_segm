@@ -177,8 +177,8 @@ If you are using this pipeline to analyze your bioimage data you can easily incl
 
 - For APA and BibTex style scroll to the top of this page, above the Release section and under About click on the cite this repository.
 
-- For APA, Harvard, MLA, Vancouver, Chicago and IEEE styles, visit [Zenodo](https://doi.org/10.5281/zenodo.19256566) and in the right panel at the bottom you will find the Citation section. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256566.svg)](https://doi.org/10.5281/zenodo.19256566)
+- For APA, Harvard, MLA, Vancouver, Chicago and IEEE styles, visit [Zenodo](https://doi.org/10.5281/zenodo.19256566) and in the right panel at the bottom you will find the Citation section. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19275811.svg)](https://doi.org/10.5281/zenodo.19275811)
 
 This is an example from APA, the most popular citation style:
 
-<code>Alberto Diez-Sanchez, & Octavio Reyes-Matte. (2026). adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0 (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.19256566</code>
+<code>Díez-Sánchez, A., & Reyes-Matte, O. (2026). adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0 (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.19275811</code>
