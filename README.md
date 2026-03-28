@@ -39,7 +39,12 @@ Once you have your developer stack ready you can simply clone this repository us
 
 <code>git clone https://github.com/adiezsanchez/brain_tissue_nuc_segm</code>
 
-Then proceed to the next step either using **Mamba** or **Pixi** as your environment manager of choice. This environment has been created using Windows as the platform of choice, if you need to recreate the environment for other platforms scroll to the bottom of the README.md to see the install route I followed:
+If you do not have git installed you can dowload the code as a .zip file by clicking on the green < > Code button at the upper right corner of the repo.
+
+Proceed to the next step either using **Mamba** or **Pixi** as your environment manager of choice.
+
+> [!WARNING]
+> The Conda/Mamba environment has been created using **Windows** as the platform of choice. **Pixi** allows you to generate a working virtual environment for **Windows** (win-64), **Linux** (linux-64) and **MacOS** (osx-arm64).
 
 <img src="./assets/mamba_banner.png">
 
