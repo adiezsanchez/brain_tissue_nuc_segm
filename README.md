@@ -1,6 +1,6 @@
 <h1>Nuclear Segmentation Utility for Brain and Organoid fluorescent samples (NEUROSEG) - Identify marker positive cells based on fluorescence intensity</h1>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256567.svg)](https://doi.org/10.5281/zenodo.19256567)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256566.svg)](https://doi.org/10.5281/zenodo.19256566)
 [![License](https://img.shields.io/pypi/l/napari-accelerated-pixel-and-object-classification.svg?color=green)](https://github.com/adiezsanchez/brain_tissue_nuc_segm/blob/main/LICENSE)
 [![Development Status](https://img.shields.io/pypi/status/napari-accelerated-pixel-and-object-classification.svg)](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha)
 [![FAIR checklist badge](https://fairsoftwarechecklist.net/badge.svg)](https://fairsoftwarechecklist.net/v0.2?f=31&a=32113&i=21320&r=123)
@@ -170,3 +170,15 @@ Needed some manual downgrades to make Stardist NMS step leverage Multithreading 
 
    <code>pip install numba==0.59.1</code>
 </details>
+
+<h2>How to cite this pipeline</h2>
+
+If you are using this pipeline to analyze your bioimage data you can easily include it in your references following the instructions below:
+
+- For APA and BibTex style scroll to the top of this page, above the Release section and under About click on the cite this repository.
+
+- For APA, Harvard, MLA, Vancouver, Chicago and IEEE styles, visit [Zenodo](https://doi.org/10.5281/zenodo.19256566) and in the right panel at the bottom you will find the Citation section. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19256566.svg)](https://doi.org/10.5281/zenodo.19256566)
+
+This is an example from APA, the most popular citation style:
+
+<code>Alberto Diez-Sanchez, & Octavio Reyes-Matte. (2026). adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0 (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.19256566</code>
