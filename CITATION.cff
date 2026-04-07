@@ -6,8 +6,8 @@ authors:
   orcid: "https://orcid.org/0000-0001-5146-3089"
 - family-names: "Reyes-Matte"
   given-names: "Octavio"
-title: "adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0"
-version: 1.0.0
-doi: 10.5281/zenodo.19256567
+title: "adiezsanchez/brain_tissue_nuc_segm: NEUROSEG"
+version: 1.0.1
+doi: 10.5281/zenodo.19275811
 date-released: 2026-03-27
 url: "https://github.com/adiezsanchez/brain_tissue_nuc_segm"
