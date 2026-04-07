@@ -181,4 +181,4 @@ If you are using this pipeline to analyze your bioimage data you can easily incl
 
 This is an example from APA, the most popular citation style:
 
-<code>Díez-Sánchez, A., & Reyes-Matte, O. (2026). adiezsanchez/brain_tissue_nuc_segm: NEUROSEG v1.0.0 (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.19275811</code>
+<code>Díez-Sánchez, A., & Reyes-Matte, O. (2026). adiezsanchez/brain_tissue_nuc_segm: NEUROSEG (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.19275811</code>
