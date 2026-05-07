@@ -1,7 +1,10 @@
 from csbdeep.utils import normalize
 from tensorflow.python.client import device_lib
 from pathlib import Path
-import oirfile
+try:
+    import oirfile
+except ModuleNotFoundError:
+    from Stardist import oirfile
 import czifile
 import nd2
 import tifffile
