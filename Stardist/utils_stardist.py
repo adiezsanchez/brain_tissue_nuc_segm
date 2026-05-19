@@ -13,7 +13,7 @@ import numpy as np
 import os
 import pandas as pd
 from skimage import measure
-from scipy.ndimage import binary_erosion
+from scipy.ndimage import binary_erosion, distance_transform_edt
 import pyclesperanto_prototype as cle
 import warnings
 
@@ -295,7 +295,7 @@ def extract_contour(roi: np.ndarray) -> np.ndarray:
     
     return contour_mask
 
-def remove_labels_touching_roi_edge(labels, roi):
+def remove_labels_touching_roi_edge(labels, roi, padding=None, remove_roi_ext_labels=False):
     """
     Removes labels that are touching the edges of a binary region of interest (ROI) in a 2D or 3D array containing labels.
 
@@ -310,6 +310,16 @@ def remove_labels_touching_roi_edge(labels, roi):
         The function will either generate a border contour if `roi` is filled entirely with ones, or use the ROI to
         generate contours of the region.
 
+    padding : int or None, optional
+        Width in pixels of the inward band used to detect labels touching the ROI edge.
+        If ``None`` (default), uses a 1-pixel image border for full-image ROIs or ``extract_contour`` for user ROIs.
+        If a positive integer, extends the exclusion band inward by that many pixels.
+
+    remove_roi_ext_labels : bool, optional
+        If ``True`` and ``roi`` is a user-defined (non full-image) mask, sets all label pixels outside the filled
+        ``roi`` to 0 before edge removal. Requires ``roi`` to be a filled binary mask, not a contour-only mask.
+        Default is ``False``.
+
     Returns:
     --------
     np.ndarray
@@ -317,10 +327,12 @@ def remove_labels_touching_roi_edge(labels, roi):
 
     Notes:
     ------
+    - Processing order: optional exterior zeroing → contour band → label removal → relabel.
     - The function generates a contour for the ROI and uses it to identify labels that intersect with the ROI's contour.
     - For 3D images, the function will extend the 2D contour mask across the entire stack of slices.
     - The function assumes that `labels` is a labeled image and `roi` is a binary mask image (values of 0 or 1).
     - This function relabels the remaining labels in the output using `skimage.measure.label()` to ensure continuous labeling.
+    - Omitting ``padding`` and ``remove_roi_ext_labels`` preserves the original behavior for existing callers.
 
     Example:
     --------
@@ -329,20 +341,33 @@ def remove_labels_touching_roi_edge(labels, roi):
     >>> filtered_labels = remove_labels_touching_roi_edge(labels, roi)
     >>> print(filtered_labels)
     """
-    # Check if roi covers the entire image (all values stored in roi == 1):
-    if np.all(roi == 1):
-        #  Generate a contour that covers the border of the image
+    if padding is not None and (not isinstance(padding, int) or isinstance(padding, bool) or padding < 1):
+        raise ValueError("padding must be None or a positive integer")
+
+    full_image_roi = np.all(roi == 1)
+
+    if remove_roi_ext_labels and not full_image_roi:
+        roi_bool = roi.astype(bool)
+        if len(labels.shape) == 3:
+            labels[..., ~roi_bool] = 0
+        else:
+            labels[~roi_bool] = 0
+
+    if full_image_roi:
+        border_width = 1 if padding is None else padding
         contour_mask = np.zeros(roi.shape, dtype=np.int8)
+        contour_mask[0:border_width, :] = 1
+        contour_mask[-border_width:, :] = 1
+        contour_mask[:, 0:border_width] = 1
+        contour_mask[:, -border_width:] = 1
 
-        # Set the outer border to 1 
-        contour_mask[0, :] = 1  # Top edge
-        contour_mask[-1, :] = 1  # Bottom edge
-        contour_mask[:, 0] = 1  # Left edge
-        contour_mask[:, -1] = 1  # Right edge
-
-    # Otherwise extract the contour of a user-defined roi:
     else:
-        contour_mask = extract_contour(roi)
+        if padding is None:
+            contour_mask = extract_contour(roi)
+        else:
+            roi_bool = roi.astype(bool)
+            dist = distance_transform_edt(roi_bool)
+            contour_mask = ((dist > 0) & (dist <= padding)).astype(np.uint8)
 
     # 3D segmentation logic, extend 2D mask across the entire stack volume
     if len(labels.shape) == 3:
